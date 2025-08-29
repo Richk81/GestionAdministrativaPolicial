@@ -1,0 +1,394 @@
+﻿
+@{
+    ViewData["Title"] = "Personal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <!-- ============================================================
+    =ESTILOS PARA ESTA PAGINA (css)
+    ===============================================================-->
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Roll de Combate Personal Policial</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <button class="btn btn-success" data-toggle="modal" data-target="#modalData">
+                    <i class="fas fa-user-plus"></i> Nuevo Personal
+                </button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered" id="tbdataPersonal" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>N°</th> <!-- Enumeración -->
+                            <th>Foto</th>
+                            <th>Legajo</th>
+                            <th>Apellido y Nombre</th>
+                            <th>Grado</th>
+                            <th>Funcion</th>
+                            <th>Sit. Revista</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td> <!-- Enumeración ejemplo -->
+                            <td><img style="height:60px ;" src="https://images.unsplash.com/photo-1519648023493-d82b5f8d7b8a?w=300" class="rounded mx-auto d-block" /></td>
+                            <td>4363</td>
+                            <td>Arroyo Juan</td>
+                            <td>Sargento</td>
+                            <td>Admin. S-1</td>
+                            <td>Operativo</td>
+                            <td>
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalles" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" title="Editar">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" title="Eliminar">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6>Datos del Personal Policial</h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" value="0" id="txtIdPersonal">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtLegajo">Legajo</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtLegajo">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtApellidoNombre">Apellido y Nombre</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtApellidoNombre">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="cboGrado">Grado</label>
+                                    <select class="form-control form-control-sm" id="cboGrado">
+                                        <option value="">-- Seleccione un grado --</option>
+                                        <option value="Comisario General">Comisario General</option>
+                                        <option value="Comisario Mayor">Comisario Mayor</option>
+                                        <option value="Comisario Inspector">Comisario Inspector</option>
+                                        <option value="Comisario Principal">Comisario Principal</option>
+                                        <option value="Comisario">Comisario</option>
+                                        <option value="Sub. Comisario">Sub. Comisario</option>
+                                        <option value="Oficial Principal">Oficial Principal</option>
+                                        <option value="Oficial Auxiliar">Oficial Auxiliar</option>
+                                        <option value="Oficial Ayudante">Oficial Ayudante</option>
+                                        <option value="Oficial Sub. Ayudante">Oficial Sub. Ayudante</option>
+                                        <option value="Sub. Oficial Mayor">Sub. Oficial Mayor</option>
+                                        <option value="Sub. Oficial Principal">Sub. Oficial Principal</option>
+                                        <option value="Sargento Ayudante">Sargento Ayudante</option>
+                                        <option value="Sargento Primero">Sargento Primero</option>
+                                        <option value="Sargento">Sargento</option>
+                                        <option value="Cabo Primero">Cabo Primero</option>
+                                        <option value="Cabo">Cabo</option>
+                                        <option value="Agente">Agente</option>
+                                        <option value="Personal Transitorio Policial">Personal Transitorio Policial</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtChapa">N° Chapa</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtChapa">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="cboSexo">Sexo</label>
+                                    <select class="form-control form-control-sm" id="cboSexo">
+                                        <option value="">-- Seleccione una opción --</option>
+                                        <option value="Masculino">Masculino</option>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Otro">Otro</option>
+                                        <option value="PrefiereNoDecirlo">Prefiere no decirlo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="cboFuncion">Función</label>
+                                    <select class="form-control form-control-sm" id="cboFuncion">
+                                        <option value="">-- Seleccione una función --</option>
+                                        <option value="Director">Director</option>
+                                        <option value="Sub. Director">Sub Director</option>
+                                        <option value="Coordinador">Coordinador</option>
+                                        <option value="1er Jefe">1er Jefe</option>
+                                        <option value="2do Jefe">2do Jefe</option>
+                                        <option value="3er Jefe">3er Jefe</option>
+                                        <option value="Jefe Compañia">Jefe Compañia</option>
+                                        <option value="Aux. de Turno">Aux. de Turno</option>
+                                        <option value="Of. Sumariante">Of. Sumariante</option>
+                                        <option value="Of. de Guardia">Of. de Guardia</option>
+                                        <option value="Cuartelero">Cuartelero</option>
+                                        <option value="Armero">Armero</option>
+                                        <option value="Mecanico">Mecánico</option>
+                                        <option value="Logistico">Logístico</option>
+                                        <option value="Lavadero">Lavadero</option>
+                                        <option value="Motorista">Motorista</option>
+                                        <option value="Chofer/Apoyo">Chofer/Apoyo</option>
+                                        <option value="Comisionista">Comisionista</option>
+                                        <option value="Aux. Admin. S1">Aux. Admin. S1</option>
+                                        <option value="Aux. Admin. S3">Aux. Admin. S3</option>
+                                        <option value="Aux. Admin. S4">Aux. Admin. S4</option>
+                                        <option value="Aux. Admin. S5">Aux. Admin. S5</option>
+                                        <option value="Aux. Admin. Sifcop">Aux. Admin. Sifcop</option>
+                                        <option value="Aux. Admin. Estadisticas">Aux. Admin. Estadísticas</option>
+                                        <option value="Recorridos/Parada">Recorridos/Parada</option>
+                                        <option value="Consigna">Consigna</option>
+                                        <option value="Operador">Operador</option>
+                                        <option value="Recepcionista">Recepcionista</option>
+                                        <option value="Visualizador">Visualizador</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="cboHorario">Horario</label>
+                                    <select class="form-control form-control-sm" id="cboHorario">
+                                        <option value="">-- Seleccione un horario --</option>
+                                        <option value="24 x 48 hs">24 x 48 hs</option>
+                                        <option value="07 a 15 hs">07 a 15 hs</option>
+                                        <option value="15 a 23 hs">15 a 23 hs</option>
+                                        <option value="23 a 07 hs">23 a 07 hs</option>
+                                        <option value="Sin Horario">Sin Horario</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="cboRevista">Situación de Revista</label>
+                                    <select class="form-control form-control-sm" id="cboRevista">
+                                        <option value="Operativo">Operativo</option>
+                                        <option value="LAO">LAO</option>
+                                        <option value="Nota Medica">Nota Médica</option>
+                                        <option value="Lic. Extraordinaria">Lic. Extraordinaria</option>
+                                        <option value="ART">ART</option>
+                                        <option value="Disponible x ART">Disponible x ART</option>
+                                        <option value="Disponible x Nota Medica">Disponible x Nota Médica</option>
+                                        <option value="Disponible">Disponible</option>
+                                        <option value="Pasivo">Pasivo</option>
+                                        <option value="Comisionado">Comisionado</option>
+                                        <option value="ConProtocolo">Con Protocolo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtFechaNacimiento">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control form-control-sm" id="txtFechaNacimiento">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtTelefono">Teléfono</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtTelefono">
+                                </div>
+                            </div>
+                            <!-- NUEVOS CAMPOS: Domicilio, Localidad, Cria. Jurisdiccional -->
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtDomicilio">Domicilio</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtDomicilio">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtLocalidad">Localidad</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtLocalidad">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-12">
+                                    <label for="txtCriaJurisdiccional">Cria. Jurisdiccional</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtCriaJurisdiccional">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtTelefonoEmergencia">Teléfono Emergencia</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtTelefonoEmergencia">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtDNI">DNI</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtDNI">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtSubsidioSalud">Subsidio Salud</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtSubsidioSalud">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtEstudios">Estudios Cursados</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtEstudios">
+                                </div>
+                            </div>
+                            <!-- NUEVOS CAMPOS: Arma - Marca y N° de Serie -->
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtArmaMarca">Arma - Marca</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtArmaMarca">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtArmaNumeroSerie">N° de Serie de Arma</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtArmaNumeroSerie">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtEstadoCivil">Estado Civil</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtEstadoCivil">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtEspecialidad">Especialidad</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtEspecialidad">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtAltaDivision">Alta en División</label>
+                                    <input type="date" class="form-control form-control-sm" id="txtAltaDivision">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtAltaPolicia">Alta en Policía</label>
+                                    <input type="date" class="form-control form-control-sm" id="txtAltaPolicia">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label for="txtDestinoAnterior">Destino Anterior</label>
+                                    <input type="text" class="form-control form-control-sm" id="txtDestinoAnterior">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="txtEmail">Email</label>
+                                    <input type="email" class="form-control form-control-sm" id="txtEmail">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <img id="imgPersonalPolicial"
+                                 src="https://images.unsplash.com/photo-1519648023493-d82b5f8d7b8a?w=300"
+                                 class="img-fluid rounded mx-auto d-block mb-2"
+                                 alt="Foto del usuario"
+                                 style="max-width: 200px;">
+                            <input type="file"
+                                   class="form-control"
+                                   id="txtFoto"
+                                   accept="image/*">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- ============================================================
+    =SCRIPTS PARA ESTA PAGINA
+    ===============================================================-->
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/pdfmake.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/vfs_fonts.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
+    <!-- JAVA SCRIPT -->
+    <script>
+        $(document).ready(function () {
+            // Inicialización de la tabla de Personal
+            // Se verifica si la tabla ya ha sido inicializada para evitar errores.
+            if (!$.fn.DataTable.isDataTable('#tbdataPersonal')) {
+                var tablePersonal = $('#tbdataPersonal').DataTable({
+                    responsive: true, // Habilita la adaptabilidad de la tabla a diferentes tamaños de pantalla
+                    autoWidth: false, // Evita que DataTables intente ajustar el ancho automáticamente, dándote más control con CSS
+                    language: {
+                        // Carga la traducción al español para los textos de la tabla
+                        url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                    },
+                    // Define la disposición de los elementos de la tabla:
+                    // 'l' (length): Control para seleccionar la cantidad de filas a mostrar.
+                    // 'B' (buttons): Los botones de exportación.
+                    // 'f' (filter): El campo de búsqueda/filtro.
+                    // 'r' (processing): Indicador de procesamiento.
+                    // 't' (table): La tabla HTML en sí.
+                    // 'i' (information): El texto "Mostrando X de Y elementos".
+                    // 'p' (pagination): Los controles de paginación (anterior, siguiente, números).
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5', // Botón para exportar a Excel
+                            text: '<i class="fas fa-file-excel"></i> Descargar Excel', // Texto e ícono del botón
+                            titleAttr: 'Exportar a Excel', // Atributo de título para accesibilidad
+                            className: 'btn btn-success btn-sm', // Clases de Bootstrap para el estilo del botón
+                            exportOptions: {
+                                // columns: ':not(:last-child)' // Descomenta esta línea si quieres excluir la última columna al exportar
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5', // Botón para exportar a PDF
+                            text: '<i class="fas fa-file-pdf"></i> Descargar PDF', // Texto e ícono del botón
+                            titleAttr: 'Exportar a PDF', // Atributo de título para accesibilidad
+                            className: 'btn btn-danger btn-sm', // Clases de Bootstrap para el estilo del botón
+                            orientation: 'landscape', // Orientación de la página del PDF: horizontal
+                            pageSize: 'LEGAL', // Tamaño de la página del PDF: Legal
+                            exportOptions: {
+                                // columns: ':not(:last-child)' // Descomentar esta línea si quieres excluir la última columna al exportar
+                            },
+                            customize: function (doc) {
+                                // Función para personalización avanzada del PDF (ej. añadir encabezados, pies de página)
+                            }
+                        }
+                    ]
+                });
+
+                // Ajusta las columnas de la tabla y recalcula el responsive al redimensionar la ventana
+                $(window).on('resize', function () {
+                    tablePersonal.columns.adjust().responsive.recalc();
+                });
+            }
+        });
+    </script>
+
+
+}
+

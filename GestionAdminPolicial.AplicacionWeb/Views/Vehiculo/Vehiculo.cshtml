@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewData["Title"] = "Vehiculo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <!-- ============================================================
+    =ESTILOS PARA ESTA PAGINA (css)
+    ===============================================================-->
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+}
+
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Vehículos</h6>
+    </div>
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-sm-3">
+                <button class="btn btn-success" data-toggle="modal" data-target="#modalData">
+                    <i class="fas fa-user-plus"></i> Nuevo Vehículo
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="tbdataVehiculos" cellspacing="0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>N°</th> <!-- Enumeración -->
+                        <th>N° de TUC</th>
+                        <th>Tipo</th>
+                        <th>Marca y Modelo</th>
+                        <th>Dominio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td> <!-- Enumeración ejemplo -->
+                        <td>1743</td>
+                        <td>Camioneta</td>
+                        <td>Toyota Hilux</td>
+                        <td>kji14254df</td>
+                        <td>Operativo</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalles" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-primary btn-sm" title="Editar">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h6 class="modal-title">Agregar Vehículo</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formChaleco">
+                    <input type="hidden" id="txtId" name="Id" value="0">
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="txtTuc">N° de TUC</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtTuc" name="TUC">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="cboTipo">Tipo</label>
+                            <select class="form-control form-control-sm" id="cboTipo" name="Tipo">
+                                <option value="Bicicleta">Bicicleta</option>
+                                <option value="Motocicleta">Motocicleta</option>
+                                <option value="Cuatriciclo">Cuatriciclo</option>
+                                <option value="Automóvil">Automóvil</option>
+                                <option value="Camioneta">Camioneta</option>
+                                <option value="Camión">Camión</option>
+                                <option value="Acoplado">Acoplado</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="txtMarcaYModelo">Marca y Modelo</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtMarcaYModelo" name="MarcaYModelo">
+                            <label for="txtMarcaYModelo">Marca y Modelo</label>
+                            <textarea class="form-control form-control-sm" id="txtMarcaYModelo" name="MarcaYModelo" rows="1"></textarea>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="txtDominio">Dominio - Patente</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtDominio" name="Dominio">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="txtAñoFabricacion">Año de Fabricación</label>
+                            <input type="date" class="form-control form-control-sm" id="txtAñoFabricacion" name="AnoFabricacion" min="1900" max="2099">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="txtMotor">N° de Motor</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtMotor" name="Motor">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="txtChasis">N° de Chasis</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtChasis" name="Chasis">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="cboEstado">Estado</label>
+                            <select class="form-control form-control-sm" id="cboEstado" name="Estado">
+                                <option value="En Funcionamiento">En Funcionamiento</option>
+                                <option value="Fuera de Servicio">Fuera de Servicio</option>
+                                <option value="Secuestrado">Secuestrado</option>
+                                <option value="Comisionado">Comisionado</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="cboLugarDeposito">Lugar de Depósito</label>
+                            <select class="form-control form-control-sm" id="cboLugarDeposito" name="LugarDeReparacion">
+                                <option value="En Base">En Base</option>
+                                <option value="En Transporte">En Transporte</option>
+                                <option value="En Comisaría">En Comisaría</option>
+                                <option value="Comisionado">Comisionado</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="txtObservaciones">Observaciones</label>
+                            <textarea class="form-control form-control-sm" id="txtObservaciones" name="Observaciones" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <!-- ============================================================
+    =SCRIPTS PARA ESTA PAGINA
+    ===============================================================-->
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/pdfmake.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/vfs_fonts.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
+    <!-- JAVA SCRIPT -->
+    <script>
+        $(document).ready(function () {
+            // Verifica si la tabla de Vehículos ya ha sido inicializada
+            if (!$.fn.DataTable.isDataTable('#tbdataVehiculos')) {
+                var tableVehiculos = $('#tbdataVehiculos').DataTable({
+                    responsive: true,
+                    autoWidth: false, // Opcional, mejora el control del ancho
+
+                    // Configuración del idioma
+                    language: {
+                        // Asegúrate de que esta ruta local sea correcta para tu archivo Spanish.json
+                        url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                    },
+
+                    // --- Configuración de los botones de exportación ---
+                    dom: 'lBfrtip', // 'B' habilita los botones en el DOM
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fas fa-file-excel"></i> Descargar Excel', // Texto e icono para el botón de Excel
+                            titleAttr: 'Exportar a Excel', // Tooltip al pasar el mouse
+                            className: 'btn btn-success btn-sm', // Clases CSS para el botón (Bootstrap)
+                            exportOptions: {
+                                // Opciones de exportación: aquí puedes definir qué columnas incluir o excluir
+                                // Por ejemplo, para excluir la última columna (acciones), usa:
+                                // columns: ':not(:last-child)'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="fas fa-file-pdf"></i> Descargar PDF', // Texto e icono para el botón de PDF
+                            titleAttr: 'Exportar a PDF', // Tooltip al pasar el mouse
+                            className: 'btn btn-danger btn-sm', // Clases CSS para el botón de PDF
+                            orientation: 'landscape', // Orientación de la página PDF: 'portrait' (vertical) o 'landscape' (horizontal)
+                            pageSize: 'LEGAL', // Tamaño del papel: 'A3', 'A4', 'A5', 'LEGAL', 'LETTER', 'TABLOID'
+                            exportOptions: {
+                                // Opciones de exportación para PDF, igual que en Excel
+                                // columns: ':not(:last-child)'
+                            },
+                            // Customización avanzada del PDF (opcional, si necesitas modificar el documento PDF antes de generarlo)
+                            customize: function (doc) {
+                                // doc es el objeto pdfmake. Aquí puedes cambiar el título, fuentes, etc.
+                                // doc.content[0].text = 'Reporte de Vehículos'; // Ejemplo: Cambiar el título del PDF
+                            }
+                        }
+                    ]
+                    // --- Fin de configuración de botones ---
+                });
+
+                // Redibujar tabla de Vehículos al redimensionar ventana
+                $(window).on('resize', function () {
+                    tableVehiculos.columns.adjust().responsive.recalc();
+                });
+            }
+        });
+    </script>
+
+
+
+}
+

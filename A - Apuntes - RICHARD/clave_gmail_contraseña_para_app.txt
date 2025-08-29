@@ -1,0 +1,20 @@
+//////////////VIDEO 5///////////////////
+
+Nombre:
+GestionPolicial: gestionpolicial2025@gmail.com
+
+contraseña:
+axkezbeyptvhiafo
+
+
+
+/////////////VIDEO 6://///////////////////
+
+Usuarios FireBase:
+richard2025@gmail.com   ---> contraseña:richard2025
+
+link proyecto en FireBase:
+gestionpolicial-daa24.firebasestorage.app
+
+clave appi Web:
+AIzaSyB63Q2T7EWdt2eI30XrQJtKrssXeEAfHbo

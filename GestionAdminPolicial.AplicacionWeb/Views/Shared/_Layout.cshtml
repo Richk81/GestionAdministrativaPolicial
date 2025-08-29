@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gestion Adminstrativa Policial - @ViewData["Title"]</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="~/css/sb-admin-2.css" rel="stylesheet">
+    <link href="~/vendor/toastr/toastr.min.css" rel="stylesheet">
+    <link href="~/vendor/sweetalert/sweetalert.css" rel="stylesheet">
+    @await RenderSectionAsync("Estilos", required: false)
+</head>
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                <div class="sidebar-brand-icon">
+                    <img src="/img/GestionPolicial.png" alt="Icono Policial" style="width: 35px; height: 55px;">
+                </div>
+                <div class="sidebar-brand-text mx-3">Gestion Administrativa Policial</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index","DashBoard")">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Administración Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdministracion">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Administración</span>
+                </a>
+                <div id="collapseAdministracion" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Index","Usuario")">Usuarios</a>
+                        <a class="collapse-item" href="@Url.Action("Index","Division")">Dependencia</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Personal Policial Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePersonalPolicial">
+                    <i class="fas fa-fw fa-user-shield"></i>
+                    <span>Personal</span>
+                </a>
+                <div id="collapsePersonalPolicial" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Personal","Personal")">Listado / Agregar</a>
+                        <a class="collapse-item" href="@Url.Action("Index","PersonalTrasladado")">Trasladados</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Chalecos Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseChalecos">
+                    <i class="fas fa-fw fa-vest"></i>
+                    <span>Chalecos</span>
+                </a>
+                <div id="collapseChalecos" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Chaleco","Chaleco")">Listado / Agregar</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Escopetas Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEscopetas">
+                    <i class="fas fa-fw fa-crosshairs"></i>
+                    <span>Escopetas</span>
+                </a>
+                <div id="collapseEscopetas" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Escopeta","Escopeta")">Listado / Agregar</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Radios Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRadios">
+                    <i class="fas fa-fw fa-broadcast-tower"></i>
+                    <span>Radios</span>
+                </a>
+                <div id="collapseRadios" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Radio","Radio")">Listado / Agregar</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Vehículos Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVehiculos">
+                    <i class="fas fa-fw fa-car"></i>
+                    <span>Vehículos</span>
+                </a>
+                <div id="collapseVehiculos" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Vehiculo","Vehiculo")">Listado / Agregar</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Reportes Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Reportes</span>
+                </a>
+                <div id="collapseReportes" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Reportes","Reportes")">Reportes de Altas & Bajas</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Contenedor general -->
+                    <div class="d-flex align-items-center justify-content-between w-100">
+
+                        <!-- Logo centrado en móvil -->
+                        <div class="d-block d-md-none w-100 text-center">
+                            <img src="~/img/logo.png" alt="Logo del Instituto" style="height: 50px;">
+                        </div>
+
+                        <!-- Logo alineado a la izquierda en pantallas medianas o grandes -->
+                        <div class="d-none d-md-flex align-items-center">
+                            <img src="~/img/logo.png" alt="Logo del Instituto" style="height: 61px;">
+                        </div>
+
+                        <!-- Texto centrado visible solo en pantallas md o más -->
+                        <div class="d-none d-md-block text-center flex-grow-1">
+                            <span class="font-weight-bold text-primary" style="font-size: 1.1rem;">
+                                Carrera: Tecnicatura Superior en Desarrollo de Software - Año 2025 - Proyecto Final
+                            </span>
+                        </div>
+
+                        <!-- Menú de usuario -->
+                        <ul class="navbar-nav d-flex align-items-center">
+
+                            <div class="topbar-divider d-none d-sm-block"></div>
+
+                            <!-- llama a la vista del componente MenuUsuario -->
+							@await Component.InvokeAsync("MenuUsuario")
+
+                        </ul>
+                    </div>
+
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+
+
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Gestion Administrativa Policial 2025 - by: Juan José "Richard" Arroyo</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/js/sb-admin-2.js"></script>
+    <script src="~/vendor/toastr/toastr.min.js"></script>
+    <script src="~/vendor/sweetalert/sweetalert.js"></script>
+    <script src="~/vendor/loadingoverlay/loadingoverlay.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

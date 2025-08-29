@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewData["Title"] = "Escopeta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <!-- ============================================================
+    =ESTILOS PARA ESTA PAGINA (css)
+    ===============================================================-->
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+}
+
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Lista de Escopetas</h6>
+    </div>
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-sm-3">
+                <button class="btn btn-success" data-toggle="modal" data-target="#modalData">
+                    <i class="fas fa-user-plus"></i> Nueva Escopeta
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="tbdataEscopetas" cellspacing="0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>N°</th> <!-- Enumeración -->
+                        <th>N° de Serie</th>
+                        <th>Marca y Modelo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td> <!-- Enumeración ejemplo -->
+                        <td>100010</td>
+                        <td>Maroon Dolphyng</td>
+                        <td>Operativo</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalles" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-primary btn-sm" title="Editar">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h6 class="modal-title">Detalle Escopeta</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formChaleco">
+                    <input type="hidden" id="txtId" value="0">
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="txtSerie">N° de Serie</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtSerie" name="Serie">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="txtMarcaModelo">Marca y Modelo</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtMarcaModelo" name="MarcaModelo">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="cboEstado">Estado</label>
+                            <select class="form-control form-control-sm" id="cboEstado">
+                                <option value="Operativo">Operativo</option>
+                                <option value="Fuera de Servicio">Fuera de Servicio</option>
+                                <option value="En Reparacion">En Reparacion</option>
+                                <option value="Extraviada">Extraviada</option>
+                                <option value="Secuestrada">Secuestrada</option>
+                                <option value="Comisionado">Comisionado</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="txtObservaciones">Observaciones</label>
+                            <textarea class="form-control form-control-sm" id="txtObservaciones" name="Observaciones" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- ============================================================
+    =SCRIPTS PARA ESTA PAGINA
+    ===============================================================-->
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/pdfmake.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/vfs_fonts.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
+    <!-- JAVA SCRIPT -->
+    <script>
+        $(document).ready(function () {
+            // Inicialización de la tabla de Escopetas
+            // Se verifica si la tabla ya ha sido inicializada para evitar errores.
+            if (!$.fn.DataTable.isDataTable('#tbdataEscopetas')) {
+                var tableEscopetas = $('#tbdataEscopetas').DataTable({
+                    responsive: true, // Habilita la adaptabilidad de la tabla a diferentes tamaños de pantalla
+                    autoWidth: false, // Evita que DataTables intente ajustar el ancho automáticamente, dándote más control con CSS
+                    language: {
+                        // Carga la traducción al español para los textos de la tabla
+                        url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                    },
+                    // Define la disposición de los elementos de la tabla:
+                    // 'l' (length): Control para seleccionar la cantidad de filas a mostrar.
+                    // 'B' (buttons): Los botones de exportación.
+                    // 'f' (filter): El campo de búsqueda/filtro.
+                    // 'r' (processing): Indicador de procesamiento.
+                    // 't' (table): La tabla HTML en sí.
+                    // 'i' (information): El texto "Mostrando X de Y elementos".
+                    // 'p' (pagination): Los controles de paginación (anterior, siguiente, números).
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5', // Botón para exportar a Excel
+                            text: '<i class="fas fa-file-excel"></i> Descargar Excel', // Texto e ícono del botón
+                            titleAttr: 'Exportar a Excel', // Atributo de título para accesibilidad
+                            className: 'btn btn-success btn-sm', // Clases de Bootstrap para el estilo del botón
+                            exportOptions: {
+                                // columns: ':not(:last-child)' // Descomenta esta línea si quieres excluir la última columna al exportar
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5', // Botón para exportar a PDF
+                            text: '<i class="fas fa-file-pdf"></i> Descargar PDF', // Texto e ícono del botón
+                            titleAttr: 'Exportar a PDF', // Atributo de título para accesibilidad
+                            className: 'btn btn-danger btn-sm', // Clases de Bootstrap para el estilo del botón
+                            orientation: 'landscape', // Orientación de la página del PDF: horizontal
+                            pageSize: 'LEGAL', // Tamaño de la página del PDF: Legal
+                            exportOptions: {
+                                // columns: ':not(:last-child)' // Descomenta esta línea si quieres excluir la última columna al exportar
+                            },
+                            customize: function (doc) {
+                                // Función para personalización avanzada del PDF (ej. añadir encabezados, pies de página)
+                            }
+                        }
+                    ]
+                });
+
+                // Ajusta las columnas de la tabla y recalcula el responsive al redimensionar la ventana
+                $(window).on('resize', function () {
+                    tableEscopetas.columns.adjust().responsive.recalc();
+                });
+            }
+        });
+    </script>
+
+}
+
