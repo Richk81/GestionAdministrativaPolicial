@@ -39,106 +39,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index","DashBoard")">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Administración Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdministracion">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Administración</span>
-                </a>
-                <div id="collapseAdministracion" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Index","Usuario")">Usuarios</a>
-                        <a class="collapse-item" href="@Url.Action("Index","Division")">Dependencia</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Personal Policial Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePersonalPolicial">
-                    <i class="fas fa-fw fa-user-shield"></i>
-                    <span>Personal</span>
-                </a>
-                <div id="collapsePersonalPolicial" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Personal","Personal")">Listado / Agregar</a>
-                        <a class="collapse-item" href="@Url.Action("Index","PersonalTrasladado")">Trasladados</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Chalecos Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseChalecos">
-                    <i class="fas fa-fw fa-vest"></i>
-                    <span>Chalecos</span>
-                </a>
-                <div id="collapseChalecos" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Chaleco","Chaleco")">Listado / Agregar</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Escopetas Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEscopetas">
-                    <i class="fas fa-fw fa-crosshairs"></i>
-                    <span>Escopetas</span>
-                </a>
-                <div id="collapseEscopetas" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Escopeta","Escopeta")">Listado / Agregar</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Radios Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRadios">
-                    <i class="fas fa-fw fa-broadcast-tower"></i>
-                    <span>Radios</span>
-                </a>
-                <div id="collapseRadios" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Radio","Radio")">Listado / Agregar</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Vehículos Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVehiculos">
-                    <i class="fas fa-fw fa-car"></i>
-                    <span>Vehículos</span>
-                </a>
-                <div id="collapseVehiculos" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Vehiculo","Vehiculo")">Listado / Agregar</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Reportes Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Reportes</span>
-                </a>
-                <div id="collapseReportes" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="@Url.Action("Reportes","Reportes")">Reportes de Altas & Bajas</a>
-                    </div>
-                </div>
-            </li>
+            @await Component.InvokeAsync("Menu")
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -188,7 +89,7 @@
                             <div class="topbar-divider d-none d-sm-block"></div>
 
                             <!-- llama a la vista del componente MenuUsuario -->
-							@await Component.InvokeAsync("MenuUsuario")
+                            @await Component.InvokeAsync("MenuUsuario")
 
                         </ul>
                     </div>
