@@ -13,6 +13,9 @@ namespace GestionAdminPolicial.BLL.Interfaces
         // Listar todo el personal policial
         Task<List<PersonalPolicial>> Lista();
 
+        // Listar personal trasladado (eliminado lógico)
+        Task<List<PersonalPolicial>> ListaTrasladados();
+
         // Crear personal con foto opcional (y arma/domicilio dentro de la entidad)
         Task<PersonalPolicial> Crear(PersonalPolicial entidad, Stream Foto = null, string NombreFoto = "");
 
