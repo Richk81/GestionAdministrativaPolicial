@@ -10,6 +10,9 @@ const MODELO_BASE = {
     urlFoto: ""
 }
 
+//🔹 DataTable(USUARIOS / Lista)
+//Esto sería la tabla principal en el front:
+
 let tablaData;
 
 $(document).ready(function () {
