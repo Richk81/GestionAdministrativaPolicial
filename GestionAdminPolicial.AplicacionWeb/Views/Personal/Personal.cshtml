@@ -21,9 +21,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-sm-3">
-                <button class="btn btn-success" data-toggle="modal" data-target="#modalData">
-                    <i class="fas fa-user-plus"></i> Nuevo Personal
-                </button>
+                <button class="btn btn-success" id="btnNuevoPersonal"><i class="fas fa-user-plus"></i>Nuevo Personal</button>
             </div>
         </div>
         <hr />
@@ -43,26 +41,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td> <!-- Enumeración ejemplo -->
-                            <td><img style="height:60px ;" src="https://images.unsplash.com/photo-1519648023493-d82b5f8d7b8a?w=300" class="rounded mx-auto d-block" /></td>
-                            <td>4363</td>
-                            <td>Arroyo Juan</td>
-                            <td>Sargento</td>
-                            <td>Admin. S-1</td>
-                            <td>Operativo</td>
-                            <td>
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalles" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-primary btn-sm" title="Editar">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm" title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -71,7 +49,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+<div class="modal fade" id="modalPersonal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -251,15 +229,23 @@
                                     <input type="text" class="form-control form-control-sm" id="txtEstudios">
                                 </div>
                             </div>
-                            <!-- NUEVOS CAMPOS: Arma - Marca y N° de Serie -->
+                            <!-- NUEVOS CAMPOS: Arma Provista - Marca y N° de Serie -->
+                            <div class="form-row">
+                                <div class="form-group col-sm-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="chkArmaProvista">
+                                        <label class="form-check-label" for="chkArmaProvista">Arma Provista</label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtArmaMarca">Arma - Marca</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtArmaMarca">
+                                    <input type="text" class="form-control form-control-sm" id="txtArmaMarca" disabled>
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtArmaNumeroSerie">N° de Serie de Arma</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtArmaNumeroSerie">
+                                    <input type="text" class="form-control form-control-sm" id="txtArmaNumeroSerie" disabled>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -297,11 +283,11 @@
                             <img id="imgPersonalPolicial"
                                  src="https://images.unsplash.com/photo-1519648023493-d82b5f8d7b8a?w=300"
                                  class="img-fluid rounded mx-auto d-block mb-2"
-                                 alt="Foto del usuario"
+                                 alt="Foto del Personal"
                                  style="max-width: 200px;">
                             <input type="file"
                                    class="form-control"
-                                   id="txtFoto"
+                                   id="txtFotoPersonalPolicial"
                                    accept="image/*">
                         </div>
                     </div>
@@ -332,63 +318,12 @@
     <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
 
+    <!-- SweetAlert -->
+    <script src="~/vendor/sweetalert/sweetalert.min.js"></script>
+
     <!-- JAVA SCRIPT -->
-    <script>
-        $(document).ready(function () {
-            // Inicialización de la tabla de Personal
-            // Se verifica si la tabla ya ha sido inicializada para evitar errores.
-            if (!$.fn.DataTable.isDataTable('#tbdataPersonal')) {
-                var tablePersonal = $('#tbdataPersonal').DataTable({
-                    responsive: true, // Habilita la adaptabilidad de la tabla a diferentes tamaños de pantalla
-                    autoWidth: false, // Evita que DataTables intente ajustar el ancho automáticamente, dándote más control con CSS
-                    language: {
-                        // Carga la traducción al español para los textos de la tabla
-                        url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
-                    },
-                    // Define la disposición de los elementos de la tabla:
-                    // 'l' (length): Control para seleccionar la cantidad de filas a mostrar.
-                    // 'B' (buttons): Los botones de exportación.
-                    // 'f' (filter): El campo de búsqueda/filtro.
-                    // 'r' (processing): Indicador de procesamiento.
-                    // 't' (table): La tabla HTML en sí.
-                    // 'i' (information): El texto "Mostrando X de Y elementos".
-                    // 'p' (pagination): Los controles de paginación (anterior, siguiente, números).
-                    dom: 'lBfrtip',
-                    buttons: [
-                        {
-                            extend: 'excelHtml5', // Botón para exportar a Excel
-                            text: '<i class="fas fa-file-excel"></i> Descargar Excel', // Texto e ícono del botón
-                            titleAttr: 'Exportar a Excel', // Atributo de título para accesibilidad
-                            className: 'btn btn-success btn-sm', // Clases de Bootstrap para el estilo del botón
-                            exportOptions: {
-                                // columns: ':not(:last-child)' // Descomenta esta línea si quieres excluir la última columna al exportar
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5', // Botón para exportar a PDF
-                            text: '<i class="fas fa-file-pdf"></i> Descargar PDF', // Texto e ícono del botón
-                            titleAttr: 'Exportar a PDF', // Atributo de título para accesibilidad
-                            className: 'btn btn-danger btn-sm', // Clases de Bootstrap para el estilo del botón
-                            orientation: 'landscape', // Orientación de la página del PDF: horizontal
-                            pageSize: 'LEGAL', // Tamaño de la página del PDF: Legal
-                            exportOptions: {
-                                // columns: ':not(:last-child)' // Descomentar esta línea si quieres excluir la última columna al exportar
-                            },
-                            customize: function (doc) {
-                                // Función para personalización avanzada del PDF (ej. añadir encabezados, pies de página)
-                            }
-                        }
-                    ]
-                });
-
-                // Ajusta las columnas de la tabla y recalcula el responsive al redimensionar la ventana
-                $(window).on('resize', function () {
-                    tablePersonal.columns.adjust().responsive.recalc();
-                });
-            }
-        });
-    </script>
-
+    <!-- Uso del archivo Usuario_Index.js de wwwroot ->js->vistas -->
+    <script src="~/js/vistas/PersonalPolicial_Index.js"></script>
 
 }
 
