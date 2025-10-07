@@ -66,11 +66,15 @@ namespace GestionAdminPolicial.AplicacionWeb.Utilidades.Automapper
                 .ForMember(dest => dest.NombreUsuario,
                     opt => opt.MapFrom(src => src.IdUsuarioNavigation != null ? src.IdUsuarioNavigation.Nombre : null));
 
-                CreateMap<VMPersonalPolicial, PersonalPolicial>()
-                    .ForMember(dest => dest.IdUsuarioNavigation, opt => opt.Ignore())
-                    .ForMember(dest => dest.Armas, opt => opt.Ignore())
-                    .ForMember(dest => dest.Domicilios, opt => opt.Ignore());
+            CreateMap<VMPersonalPolicial, PersonalPolicial>()
+                .ForMember(dest => dest.IdUsuarioNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.Armas, opt => opt.MapFrom(src => src.Armas))
+                .ForMember(dest => dest.Domicilios, opt => opt.MapFrom(src => src.Domicilios));
             #endregion
+
+            CreateMap<VMArma, Arma>().ReverseMap();
+            CreateMap<VMDomicilio, Domicilio>().ReverseMap();
+
 
             #region Chaleco
             // De entidad a ViewModel (mostrar)
