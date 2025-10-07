@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
 }
 
-<!-- DataTales Example -->
+<!-- DataTales del Personal -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
         <h6 class="m-0 font-weight-bold text-white">Roll de Combate Personal Policial</h6>
@@ -61,22 +61,24 @@
             <div class="modal-body">
                 <form>
                     <input type="hidden" value="0" id="txtIdPersonal">
+                    <input type="hidden" value="0" id="txtIdArma">
+                    <input type="hidden" value="0" id="txtIdDomicilio">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtLegajo">Legajo</label>
-                                    <input type="text" class="form-control form-control-sm input-validar" id="txtLegajo">
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtLegajo" name="Legajo">
                                 </div>
                                 <div class="form-group col-sm-6">
-                                    <label for="txtApellidoNombre">Apellido y Nombre</label>
-                                    <input type="text" class="form-control form-control-sm input-validar" id="txtApellidoNombre">
+                                    <label for="txtApellidoYNombre">Apellido y Nombre</label>
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtApellidoYNombre" name="Apellido y Nombre">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="cboGrado">Grado</label>
-                                    <select class="form-control form-control-sm" id="cboGrado">
+                                    <select class="form-control form-control-sm input-validar" id="cboGrado" name="Grado">
                                         <option value="">-- Seleccione un grado --</option>
                                         <option value="Comisario General">Comisario General</option>
                                         <option value="Comisario Mayor">Comisario Mayor</option>
@@ -101,13 +103,13 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtChapa">N° Chapa</label>
-                                    <input type="text" class="form-control form-control-sm input-validar" id="txtChapa">
+                                    <input type="text" class="form-control form-control-sm input-validar" id="txtChapa" name="Chapa">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="cboSexo">Sexo</label>
-                                    <select class="form-control form-control-sm" id="cboSexo">
+                                    <select class="form-control form-control-sm input-validar" id="cboSexo" name="Sexo">
                                         <option value="">-- Seleccione una opción --</option>
                                         <option value="Masculino">Masculino</option>
                                         <option value="Femenino">Femenino</option>
@@ -117,7 +119,7 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="cboFuncion">Función</label>
-                                    <select class="form-control form-control-sm" id="cboFuncion">
+                                    <select class="form-control form-control-sm input-validar" id="cboFuncion" name="Funcion">
                                         <option value="">-- Seleccione una función --</option>
                                         <option value="Director">Director</option>
                                         <option value="Sub. Director">Sub Director</option>
@@ -155,7 +157,7 @@
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="cboHorario">Horario</label>
-                                    <select class="form-control form-control-sm" id="cboHorario">
+                                    <select class="form-control form-control-sm input-validar" id="cboHorario" name="Horario">
                                         <option value="">-- Seleccione un horario --</option>
                                         <option value="24 x 48 hs">24 x 48 hs</option>
                                         <option value="07 a 15 hs">07 a 15 hs</option>
@@ -167,7 +169,7 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="cboRevista">Situación de Revista</label>
-                                    <select class="form-control form-control-sm" id="cboRevista">
+                                    <select class="form-control form-control-sm input-validar" id="cboRevista" name="Sit. Revista">
                                         <option value="Operativo">Operativo</option>
                                         <option value="LAO">LAO</option>
                                         <option value="Nota Medica">Nota Médica</option>
@@ -185,48 +187,48 @@
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtFechaNacimiento">Fecha de Nacimiento</label>
-                                    <input type="date" class="form-control form-control-sm" id="txtFechaNacimiento">
+                                    <input type="date" class="form-control form-control-sm" id="txtFechaNacimiento" name="Fehca Nacimiento">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtTelefono">Teléfono</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtTelefono">
+                                    <input type="text" class="form-control form-control-sm" id="txtTelefono" name="Telefono">
                                 </div>
                             </div>
                             <!-- NUEVOS CAMPOS: Domicilio, Localidad, Cria. Jurisdiccional -->
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtDomicilio">Domicilio</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtDomicilio">
+                                    <input type="text" class="form-control form-control-sm" id="txtDomicilio" name="Domicilio">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtLocalidad">Localidad</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtLocalidad">
+                                    <input type="text" class="form-control form-control-sm" id="txtLocalidad" name="Localidad">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-12">
                                     <label for="txtCriaJurisdiccional">Cria. Jurisdiccional</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtCriaJurisdiccional">
+                                    <input type="text" class="form-control form-control-sm" id="txtCriaJurisdiccional" name="Comisaria">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtTelefonoEmergencia">Teléfono Emergencia</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtTelefonoEmergencia">
+                                    <input type="text" class="form-control form-control-sm" id="txtTelefonoEmergencia" name="Tel. Emergencia">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtDNI">DNI</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtDNI">
+                                    <input type="text" class="form-control form-control-sm" id="txtDNI" name="D.N.I">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtSubsidioSalud">Subsidio Salud</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtSubsidioSalud">
+                                    <input type="text" class="form-control form-control-sm" id="txtSubsidioSalud" name="S. Salud">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtEstudios">Estudios Cursados</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtEstudios">
+                                    <input type="text" class="form-control form-control-sm" id="txtEstudios" name="Estudios">
                                 </div>
                             </div>
                             <!-- NUEVOS CAMPOS: Arma Provista - Marca y N° de Serie -->
@@ -251,40 +253,40 @@
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtEstadoCivil">Estado Civil</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtEstadoCivil">
+                                    <input type="text" class="form-control form-control-sm" id="txtEstadoCivil" name="Estado Civil">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtEspecialidad">Especialidad</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtEspecialidad">
+                                    <input type="text" class="form-control form-control-sm" id="txtEspecialidad" name="Especialidad">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtAltaDivision">Alta en División</label>
-                                    <input type="date" class="form-control form-control-sm" id="txtAltaDivision">
+                                    <input type="date" class="form-control form-control-sm" id="txtAltaDivision" name="Alta Division">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtAltaPolicia">Alta en Policía</label>
-                                    <input type="date" class="form-control form-control-sm" id="txtAltaPolicia">
+                                    <input type="date" class="form-control form-control-sm" id="txtAltaPolicia" name="Alta Policia">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtDestinoAnterior">Destino Anterior</label>
-                                    <input type="text" class="form-control form-control-sm" id="txtDestinoAnterior">
+                                    <input type="text" class="form-control form-control-sm" id="txtDestinoAnterior" name="Destino Anterior">
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <label for="txtEmail">Email</label>
-                                    <input type="email" class="form-control form-control-sm" id="txtEmail">
+                                    <input type="email" class="form-control form-control-sm" id="txtEmail" name="Email">
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <img id="imgPersonalPolicial"
-                                 src="https://images.unsplash.com/photo-1519648023493-d82b5f8d7b8a?w=300"
+                                 src=""
                                  class="img-fluid rounded mx-auto d-block mb-2"
                                  alt="Foto del Personal"
-                                 style="max-width: 200px;">
+                                 style="width: 200px; height: 200px; object-fit: cover;">
                             <input type="file"
                                    class="form-control"
                                    id="txtFotoPersonalPolicial"
@@ -294,7 +296,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarPersonal">Guardar</button>
                 <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
