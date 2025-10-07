@@ -1,0 +1,14 @@
+/* Evita que los botones se oculten en responsive collapsed */
+table.dataTable.dtr-inline.collapsed>tbody>tr>td:last-child,
+table.dataTable.dtr-inline.collapsed>tbody>tr>th:last-child {
+    display: table-cell !important;
+}
+
+/* Mantener botones en línea y evitar colapsar */
+table.dataTable td.text-center {
+    white-space: nowrap;
+}
+
+table.dataTable td.text-center button {
+    display: inline-block !important;
+}
