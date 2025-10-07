@@ -8,7 +8,7 @@ namespace GestionAdminPolicial.AplicacionWeb.Models.ViewModels
 
         public string? Legajo { get; set; }
 
-        public string? ApellidoYnombre { get; set; }
+        public string? ApellidoYNombre { get; set; }
 
         public string? Grado { get; set; }
 
