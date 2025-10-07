@@ -2,7 +2,11 @@ use GestionOfPolicial
 
 select * from rol
 
-select * from usuario
+select * from Dependencia
+
+-- Eliminar varios registros según una condición, por ejemplo trasladados
+DELETE FROM Usuario
+WHERE idUsuario = 8;
 
 SELECT * FROM Configuracion
 
@@ -24,3 +28,5 @@ select * from Dependencia
 
 insert into Dependencia(idDependencia,urlLogo,nombreLogo,nombre,correo,direccion,telefono)
 values(1,'','','','','','')
+
+

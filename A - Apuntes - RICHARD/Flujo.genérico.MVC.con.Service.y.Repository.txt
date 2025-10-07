@@ -1,0 +1,57 @@
+┌───────────────────────────────┐
+│          Controller           │
+│-------------------------------│
+│ - Recibe petición HTTP        │
+│   (GET, POST, PUT, DELETE)    │
+│ - Valida parámetros           │
+│ - Llama a la interfaz del     │
+│   servicio (IPersonalPolicial)│
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│      IPersonalPolicial        │
+│-------------------------------│
+│ - Define los métodos de negocio│
+│   (Crear, Editar, Trasladar,  │
+│    Eliminar, etc.)             │
+│ - Es la “API” del servicio    │
+│ - No implementa lógica         │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│ PersonalPolicialServicio      │
+│-------------------------------│
+│ - Implementa IPersonalPolicial│
+│ - Contiene lógica de negocio: │
+│   - Validaciones              │
+│   - Transformaciones de datos │
+│   - Reglas de negocio         │
+│ - Llama al repositorio genérico│
+│ - Puede llamar servicios externos│
+│   (ej. Firebase, APIs)       │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│  IGenericRepository<TEntity>  │
+│ / GenericRepository<TEntity>  │
+│-------------------------------│
+│ - CRUD genérico               │
+│ - Consultar, Crear, Editar,   │
+│   Eliminar                    │
+│ - No conoce reglas de negocio │
+│ - Traduce operaciones a EF Core│
+│ - Persiste entidades en BD    │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       Base de Datos           │
+│-------------------------------│
+│ - Tablas según el dominio     │
+│   (PersonalPolicial, Armas,   │
+│    Domicilios, Usuarios, etc.)│
+│ - Guarda los datos reales     │
+└───────────────────────────────┘
