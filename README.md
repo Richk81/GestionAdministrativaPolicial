@@ -126,6 +126,27 @@ dotnet ef database update
 
 ---
 
-## 👨‍💻 Autor
 
-- **Juan José Arroyo**
+---
+
+
+---
+
+### 💡 Nota sobre caché de JavaScript ⚠️
+Durante el desarrollo, si realizás cambios en los archivos `.js` (por ejemplo `PersonalPolicial_Index.js`) y no se reflejan en el navegador, **Chrome puede estar usando una versión en caché**.
+
+> **IMPORTANTE:** Para forzar la descarga del archivo actualizado y asegurarte de que todos los elementos de la interfaz se vean correctamente (como los botones en las tablas DataTables):
+> - **Windows / Linux:** `Ctrl + Shift + R` o `Ctrl + F5`
+> - **Mac:** `Cmd + Shift + R`
+
+Esto evita que falten elementos y asegura que siempre se cargue la última versión de tus scripts.
+
+
+### 🧰 Buenas prácticas de desarrollo
+- Cada cambio en archivos JS/CSS: **usar Ctrl + F5** para evitar problemas de caché.
+- Mantener actualizado `asp-append-version="true"` en los scripts y estilos principales.
+- Documentar cambios en tablas o procedimientos almacenados.
+- Verificar siempre la columna `responsivePriority` en DataTables para botones críticos.
+
+## 👨‍💻 Autor
+- **"Richard" Arroyo**
