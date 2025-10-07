@@ -4,5 +4,149 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Personal --> Trasladados</h1>
+@section Estilos {
+    <!-- ============================================================
+    =ESTILOS PARA ESTA PAGINA (css)
+    ===============================================================-->
+    <link rel="stylesheet" href="~/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
+}
+
+<!-- DataTable Personal Policial Trasladado -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-second-primary">
+        <h6 class="m-0 font-weight-bold text-white">Personal Policial Trasladado</h6>
+    </div>
+    <div class="card-body">
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered" id="tbdataPersonalTrasladado" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>N°</th> <!-- Enumeración automática -->
+                            <th>Foto</th>
+                            <th>Legajo</th>
+                            <th>Apellido y Nombre</th>
+                            <th>Grado</th>
+                            <th>Fecha de Traslado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal solo ver datos del personal -->
+<div class="modal fade" id="modalPersonalTrasladado" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6>Datos del Personal Policial</h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Datos personales -->
+                    <div class="col-md-8">
+                        <dl class="row">
+                            <dt class="col-sm-4">Legajo:</dt>
+                            <dd class="col-sm-8" id="lblLegajo">---</dd>
+
+                            <dt class="col-sm-4">Apellido y Nombre:</dt>
+                            <dd class="col-sm-8" id="lblApellidoYNombre">---</dd>
+
+                            <dt class="col-sm-4">Grado:</dt>
+                            <dd class="col-sm-8" id="lblGrado">---</dd>
+
+                            <dt class="col-sm-4">Chapa:</dt>
+                            <dd class="col-sm-8" id="lblChapa">---</dd>
+
+                            <dt class="col-sm-4">Sexo:</dt>
+                            <dd class="col-sm-8" id="lblSexo">---</dd>
+
+                            <dt class="col-sm-4">Función:</dt>
+                            <dd class="col-sm-8" id="lblFuncion">---</dd>
+
+                            <dt class="col-sm-4">Horario:</dt>
+                            <dd class="col-sm-8" id="lblHorario">---</dd>
+
+                            <dt class="col-sm-4">Sit. Revista:</dt>
+                            <dd class="col-sm-8" id="lblRevista">---</dd>
+
+                            <dt class="col-sm-4">Fecha Nac.:</dt>
+                            <dd class="col-sm-8" id="lblFechaNacimiento">---</dd>
+
+                            <dt class="col-sm-4">Teléfono:</dt>
+                            <dd class="col-sm-8" id="lblTelefono">---</dd>
+
+                            <dt class="col-sm-4">Domicilio:</dt>
+                            <dd class="col-sm-8" id="lblDomicilio">---</dd>
+
+                            <dt class="col-sm-4">Localidad:</dt>
+                            <dd class="col-sm-8" id="lblLocalidad">---</dd>
+
+                            <dt class="col-sm-4">Cria. Juris.:</dt>
+                            <dd class="col-sm-8" id="lblCriaJurisdiccional">---</dd>
+
+                            <dt class="col-sm-4">DNI:</dt>
+                            <dd class="col-sm-8" id="lblDNI">---</dd>
+
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8" id="lblEmail">---</dd>
+                        </dl>
+                    </div>
+
+                    <!-- Foto -->
+                    <div class="col-md-4 text-center">
+                        <img id="imgPersonalPolicial"
+                             src=""
+                             class="img-fluid rounded mb-2"
+                             alt="Foto del Personal"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <!-- ============================================================
+    =SCRIPTS PARA ESTA PAGINA
+    ===============================================================-->
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.responsive.min.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/pdfmake.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/vfs_fonts.js"></script>
+
+    <script src="~/vendor/datatables/extensiones/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
+
+    <!-- SweetAlert -->
+    <script src="~/vendor/sweetalert/sweetalert.min.js"></script>
+
+    <!-- JAVA SCRIPT -->
+    <!-- Uso del archivo Usuario_Index.js de wwwroot ->js->vistas -->
+    <script src="~/js/vistas/PersonalTrasladado_Index.js"></script>
+
+}
 
