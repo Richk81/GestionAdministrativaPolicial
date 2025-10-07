@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestionAdminPolicial.Entity;
 
@@ -11,6 +12,7 @@ public partial class PersonalPolicial
 
     public int? IdUsuario { get; set; }
 
+    [Column("ApellidoYNombre")] // 🔹 Esto indica el nombre real en la BD
     public string? ApellidoYnombre { get; set; }
 
     public string? Grado { get; set; }
