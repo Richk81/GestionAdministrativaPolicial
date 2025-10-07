@@ -44,8 +44,10 @@ $(document).ready(function () {
          "columns": [
              { "data": "idUsuario","visible":false, "searchable":false},
              {
-                 "data": "urlFoto", render: function (data) {
-                     return `<img style="height:60px" src=${data} class="rounded mx-auto d-block"/>`;
+                 "data": "urlFoto",
+                 render: function (data) {
+                     const url = data && data.trim() !== "" ? data : "/img/nousuario.jpg";
+                     return `<img style="height:60px" src="${url}" class="rounded mx-auto d-block"/>`;
                  }
              },
              { "data": "nombre" },
@@ -98,8 +100,14 @@ function mostrarModal(modelo = MODELO_BASE ) {
     $("#cboRol").val(modelo.idRol == 0 ? $("#cboRol option:first").val() : modelo.idRol);
 
     $("#cboEstado").val(modelo.esActivo);
+
+    // Limpiar input file
     $("#txtFoto").val("");
-    $("#imgUsuario").attr("src", modelo.urlFoto);
+    // Asignar imagen, usando la por defecto si no hay foto del usuario
+    const urlFoto = modelo.urlFoto && modelo.urlFoto.trim() !== ""
+        ? modelo.urlFoto
+        : "/img/nousuario.jpg"; // ruta de tu imagen por defecto
+    $("#imgUsuario").attr("src", urlFoto);
 
 
     $("#modalData").modal("show");
@@ -133,17 +141,16 @@ $("#btnGuardar").click(function () {
     modelo["idRol"] = parseInt($("#cboRol").val());
     modelo["esActivo"] = parseInt($("#cboEstado").val());
 
+    // 🔹 Imagen
     const inputFoto = document.getElementById("txtFoto");
-
     const formData = new FormData();
-
     formData.append("foto", inputFoto.files[0])
     formData.append("modelo", JSON.stringify(modelo))
 
     $("#modalData").find("div.modal-content").LoadingOverlay("show");
 
     if (modelo.idUsuario == 0) {
-
+        // Crear
         fetch("/Usuario/Crear", {
             method: "POST",
             body: formData
@@ -172,6 +179,7 @@ $("#btnGuardar").click(function () {
 
             })
     } else {
+        // Editar
         fetch("/Usuario/Editar", {
             method: "PUT",
             body: formData
@@ -181,9 +189,7 @@ $("#btnGuardar").click(function () {
                 return response.ok ? response.json() : Promise.reject(response);
             })
             .then(responseJson => {
-
                 if (responseJson.estado) {
-
                     tablaData.row(filaSeleccionada).data(responseJson.objeto).draw(false);
                     filaSeleccionada = null;
                     $("#modalData").modal("hide")
@@ -200,8 +206,6 @@ $("#btnGuardar").click(function () {
                 }
             })
     }
-
-
 });
 
 //Boton EDITAR
