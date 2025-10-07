@@ -23,9 +23,13 @@ namespace GestionAdminPolicial.BLL.Interfaces
         Task<PersonalPolicial> Editar(PersonalPolicial entidad, Stream Foto = null, string NombreFoto = "");
 
         // Eliminar (o marcar como eliminado) personal policial
-        Task<bool> Eliminar(int idPersonal);
+        Task<bool> Trasladar(int idPersonal, int idUsuario);
 
         // Obtener personal por ID con arma y domicilio
         Task<PersonalPolicial> ObtenerPorId(int idPersonal);
+
+        // Marcar personal como no trasladado (restituir)
+        Task<bool> Restituir(int idPersonal, int idUsuario);
+
     }
 }
