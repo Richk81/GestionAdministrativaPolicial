@@ -54,7 +54,7 @@ $(document).ready(function () {
         responsive: true,
         autoWidth: false,
         ajax: {
-            url: '/Personal/ListaTrasladados',
+            url: '/PersonalTrasladado/ListaTrasladados',
             type: 'GET',
             dataType: 'json',
             dataSrc: 'data', // <- aquí indicamos que DataTables use json.data
