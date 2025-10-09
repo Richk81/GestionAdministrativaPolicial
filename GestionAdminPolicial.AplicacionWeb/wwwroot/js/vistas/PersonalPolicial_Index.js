@@ -239,7 +239,7 @@ $("#btnGuardarPersonal").click(async function () {
 
     // 🔹 Validación Domicilios
     if (!$("#txtDomicilio").val() || !$("#txtLocalidad").val() || !$("#txtCriaJurisdiccional").val()) {
-        toastr.warning("", "Debe completar todos los campos de domicilio");
+        toastr.warning("", "Debe completar: Domicilio-Localidad-Comisaria");
         return;
     }
 
@@ -289,6 +289,7 @@ $("#btnGuardarPersonal").click(async function () {
         });
     } else {
         modelo.armas.push({
+            idArma: parseInt($("#txtIdArma").val()) || 0, // 🔹 siempre enviar el id
             marca: "No Provista",
             numeroSerie: "No Provista"
         });
