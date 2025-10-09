@@ -18,7 +18,7 @@ let tablaData;
 $(document).ready(function () {
 
     // Inicializar el combo de roles
-    fetch("/Usuario/ListaRoles")
+    fetch("/api/v1/ApiUsuario/ListaRoles")
         .then(response => { 
             return response.ok ? response.json() : Promise.reject(response);
         })
@@ -37,7 +37,7 @@ $(document).ready(function () {
         responsive: true,
         autoWidth: false,  // <-- importante
          "ajax": {
-             "url": '/Usuario/Lista',
+             "url": '/api/v1/ApiUsuario/ListaUsuarios',
              "type": "GET",
              "datatype": "json"
          },
@@ -151,7 +151,7 @@ $("#btnGuardar").click(function () {
 
     if (modelo.idUsuario == 0) {
         // Crear
-        fetch("/Usuario/Crear", {
+        fetch("/api/v1/ApiUsuario/CrearUsuario", {
             method: "POST",
             body: formData
         })
@@ -180,7 +180,7 @@ $("#btnGuardar").click(function () {
             })
     } else {
         // Editar
-        fetch("/Usuario/Editar", {
+        fetch("/api/v1/ApiUsuario/EditarUsuario", {
             method: "PUT",
             body: formData
         })
@@ -251,7 +251,7 @@ $("#tbdataUsuarios tbody").on("click", ".btn-eliminar", function () {
         if (respuesta) {
             $(".showSweetAlert").LoadingOverlay("show");
 
-            fetch(`/Usuario/Eliminar?IdUsuario=${data.idUsuario}`, {
+            fetch(`/api/v1/ApiUsuario/EliminarUsuario?IdUsuario=${data.idUsuario}`, {
                 method: "DELETE"
             })
                 .then(response => {
