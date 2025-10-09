@@ -28,54 +28,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
             return View();
         }
 
-
-        // Metodo Lista de PERSONAL POLICIAL TRASLADADO
-        // GET: /Personal/ListaTrasladados
-        [HttpGet]
-        public async Task<IActionResult> ListaTrasladados()
-        {
-            var lista = await _personalServicio.ListaTrasladados();
-            var vmLista = _mapper.Map<List<VMPersonalPolicial>>(lista);
-
-            // Se envía en formato { data: [...] } para DataTables
-            return StatusCode(StatusCodes.Status200OK, new { data = vmLista });
-        }
-
-        [HttpPut("restituir/{idPersonal}")]
-        public async Task<IActionResult> Restituir(int idPersonal)
-        {
-            GenericResponse<string> genericResponse = new GenericResponse<string>();
-            try
-            {
-                int idUsuarioInt = 0;
-                ClaimsPrincipal claimUser = HttpContext.User;
-                if (claimUser.Identity.IsAuthenticated)
-                {
-                    string idUsuario = claimUser.Claims
-                        .Where(c => c.Type == ClaimTypes.NameIdentifier)
-                        .Select(c => c.Value)
-                        .SingleOrDefault();
-
-                    if (!string.IsNullOrEmpty(idUsuario))
-                        idUsuarioInt = int.Parse(idUsuario);
-                }
-
-                bool resultado = await _personalServicio.Restituir(idPersonal, idUsuarioInt);
-
-                genericResponse.Estado = resultado;
-                genericResponse.Mensaje = resultado
-                    ? "El personal fue *Restituido* correctamente."
-                    : "No se pudo restituir al personal.";
-            }
-            catch (Exception ex)
-            {
-                genericResponse.Estado = false;
-                genericResponse.Mensaje = ex.Message;
-            }
-
-            return StatusCode(StatusCodes.Status200OK, genericResponse);
-        }
-
-
     }
+
 }

@@ -1,4 +1,5 @@
 ﻿using GestionAdminPolicial.Entity;
+using Newtonsoft.Json;
 
 namespace GestionAdminPolicial.AplicacionWeb.Models.ViewModels
 {
@@ -8,6 +9,7 @@ namespace GestionAdminPolicial.AplicacionWeb.Models.ViewModels
 
         public string? Legajo { get; set; }
 
+        [JsonProperty("apellidoYNombre")]
         public string? ApellidoYNombre { get; set; }
 
         public string? Grado { get; set; }

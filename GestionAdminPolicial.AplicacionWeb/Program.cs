@@ -1,45 +1,78 @@
-//--n°9 Automapper
 using GestionAdminPolicial.AplicacionWeb.Utilidades.Automapper;
-
 using GestionAdminPolicial.IOC;
-
 using GestionAdminPolicial.AplicacionWeb.Utilidades;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Controladores con configuración JSON
+builder.Services.AddControllers();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.WriteIndented = true; // opcional
-        //options.JsonSerializerOptions.PropertyNamingPolicy = null; // <- importante
+        options.JsonSerializerOptions.WriteIndented = true;
     });
 
-
-// Configurar autenticación y autorización
+//Autenticación por cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Acceso/Login"; // Ruta de inicio de sesión
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // Tiempo de expiración de la sesión
+        options.LoginPath = "/Acceso/Login";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     });
 
-// Inyectar dependencias
+//Inyección de dependencias
 builder.Services.InyectarDependencia(builder.Configuration);
 
-// Configurar Swagger --n°9 Automapper
+//AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+//Versionado de API
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+})
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+//Swagger con soporte para versionado
+builder.Services.AddSwaggerGen(options =>
+{
+    var provider = builder.Services.BuildServiceProvider()
+                                   .GetRequiredService<IApiVersionDescriptionProvider>();
+
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc(description.GroupName, new OpenApiInfo
+        {
+            Title = $"GestionAdminPolicial API {description.ApiVersion}",
+            Version = description.ApiVersion.ToString(),
+            Description = "Documentación de la API versionada",
+        });
+    }
+
+    //Comentarios XML
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -48,14 +81,28 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Añadir autenticación antes de autorización
-
+app.UseAuthentication();
 app.UseAuthorization();
 
+//Swagger UI
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                                $"API {description.GroupName.ToUpperInvariant()}");
+    }
+});
 
+//Activa las rutas de tus controladores API
+app.MapControllers();
+
+//Rutas MVC
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Acceso}/{action=Login}/{id?}"); // Formulario con el cual inicia la aplicación
+    pattern: "{controller=Acceso}/{action=Login}/{id?}");
 
 app.Run();

@@ -50,7 +50,7 @@ $(document).ready(function () {
         responsive: true,
         autoWidth: false,  // importante
         ajax: {
-            url: '/Personal/Lista',
+            url: '/api/v1/ApiPersonal/Lista',
             type: 'GET',
             datatype: 'json',
             beforeSend: function () {
@@ -72,7 +72,13 @@ $(document).ready(function () {
             {
                 data: "urlImagen",
                 render: function (data) {
-                    return `<img style="height:60px" src="${data || '/img/noimage.png'}" class="rounded mx-auto d-block"/>`;
+                    // Si hay una imagen válida, la mostramos
+                    if (data && data.trim() !== "") {
+                        return `<img style="height:60px; width:60px; object-fit:cover;" src="${data}" class="rounded mx-auto d-block" />`;
+                    } else {
+                        // Si no hay imagen, dejamos el espacio vacío (sin error 404)
+                        return `<div style="height:60px; width:60px; background-color:#f2f2f2; border-radius:8px; margin:auto;"></div>`;
+                    }
                 }
             },
             { data: "legajo" },
@@ -196,12 +202,16 @@ function mostrarModalPersonal(modelo = MODELO_BASE_PERSONAL) {
     });
 
 
-    //Imagen
-    $("#txtFotoPersonal").val(""); // input file vacío
-    const urlImg = modelo.urlImagen && modelo.urlImagen.trim() !== ""
-        ? modelo.urlImagen
-        : "/img/noimage.png";
-    $("#imgPersonalPolicial").attr("src", urlImg);
+    //Imagen del Personal
+    if (modelo.urlImagen && modelo.urlImagen.trim() !== "") {
+        // Si el personal tiene imagen guardada, la mostramos
+        $("#imgPersonalPolicial").attr("src", modelo.urlImagen);
+    } else {
+        // Si no tiene imagen, dejamos el src vacío (no mostramos nada)
+        $("#imgPersonalPolicial").attr("src", "");
+    }
+    //Limpiamos siempre el input de archivo por si el usuario quiere subir otra
+    $("#txtFotoPersonalPolicial").val("");
 
     //Abrir modal
     $("#modalPersonal").modal("show");
@@ -238,7 +248,7 @@ $("#btnGuardarPersonal").click(async function () {
 
     modelo.idPersonal = parseInt($("#txtIdPersonal").val());
     modelo.legajo = $("#txtLegajo").val();
-    modelo.apellidoYNombre = $("#txtApellidoYNombre").val();
+    modelo.apellidoYnombre = $("#txtApellidoYNombre").val();
     modelo.grado = $("#cboGrado").val();
     modelo.chapa = $("#txtChapa").val();
     modelo.sexo = $("#cboSexo").val();
@@ -284,19 +294,29 @@ $("#btnGuardarPersonal").click(async function () {
         });
     }
 
-    // 🔹 Imagen
+    //foto
     const inputFoto = document.getElementById("txtFotoPersonalPolicial");
     const formData = new FormData();
-    if (inputFoto.files.length > 0) formData.append("foto", inputFoto.files[0]);
+
+    // Solo agregamos foto si el usuario seleccionó un archivo
+    if (inputFoto.files.length > 0) {
+        formData.append("foto", inputFoto.files[0]);
+    }
+
+    // Siempre enviar modelo como JSON
     formData.append("modelo", JSON.stringify(modelo));
 
     // 🔹 Loading overlay
     $("#modalPersonal").find("div.modal-content").LoadingOverlay("show");
 
-    try {
-        let url = modelo.idPersonal === 0 ? "/Personal/Crear" : "/Personal/Editar";
-        let method = modelo.idPersonal === 0 ? "POST" : "PUT";
+    let url = modelo.idPersonal === 0
+        ? "/api/v1/ApiPersonal/Crear"
+        : "/api/v1/ApiPersonal/Editar";
 
+    let method = modelo.idPersonal === 0 ? "POST" : "PUT";
+
+
+    try {
         const response = await fetch(url, { method, body: formData });
         const responseJson = await response.json();
 
@@ -338,7 +358,7 @@ $("#tbdataPersonal tbody").on("click", ".btn-editar", function () {
     // hacemos fetch al back-end para traer datos completos
     $.ajax({
         type: "GET",
-        url: `/ObtenerPersonalParaEditar/${idPersonal}`, // 👈 esta es la ruta correcta
+        url: `/api/v1/ApiPersonal/ObtenerPersonalParaEditar/${idPersonal}`, // 👈 esta es la ruta correcta
         success: function (personal) {
             mostrarModalPersonal(personal);
         },
@@ -379,7 +399,7 @@ $("#tbdataPersonal tbody").on("click", ".btn-eliminar", function () {
             // Llamada al back-end para trasladar
             $.ajax({
                 type: "PUT",
-                url: `/trasladar/${idPersonal}`,
+                url: `/api/v1/ApiPersonal/trasladar/${idPersonal}`,
                 success: function (response) {
                     $(".showSweetAlert").LoadingOverlay("hide");
                     if (response.estado) {

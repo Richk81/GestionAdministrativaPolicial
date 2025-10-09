@@ -148,5 +148,159 @@ Esto evita que falten elementos y asegura que siempre se cargue la última versi
 - Documentar cambios en tablas o procedimientos almacenados.
 - Verificar siempre la columna `responsivePriority` en DataTables para botones críticos.
 
-## 👨‍💻 Autor
-- **"Richard" Arroyo**
+
+### 📘 Documentación y Versionado de APIs – Paso a paso
+Implementación realizada para documentar y versionar las APIs del proyecto GestionAdminPolicial utilizando Swagger y Asp.Versioning.
+
+> 🧩 Paso 1: Instalar los paquetes necesarios
+En la capa web (GestionAdminPolicial.AplicacionWeb), instalar los siguientes paquetes NuGet:
+
+bash
+dotnet add package Asp.Versioning.Mvc
+dotnet add package Asp.Versioning.Mvc.ApiExplorer
+dotnet add package Swashbuckle.AspNetCore
+Estos paquetes permiten definir versiones de API y generar documentación dinámica con Swagger UI.
+
+> ⚙️ Paso 2: Agregar los using en Program.cs
+Al inicio del archivo Program.cs, agregar:
+
+csharp
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+
+> 🧱 Paso 3: Configurar servicios de versionado de API
+Dentro de builder.Services, después de AddControllers(), agregar:
+
+csharp
+builder.Services.AddControllers();
+
+// ✅ Versionado de API
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+})
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+🔹 Explicación:
+
+DefaultApiVersion = new ApiVersion(1, 0) → establece la versión inicial.
+
+AssumeDefaultVersionWhenUnspecified = true → usa la versión por defecto si no se especifica.
+
+ReportApiVersions = true → muestra versiones disponibles en los encabezados de respuesta.
+
+AddApiExplorer → permite que Swagger detecte y agrupe las versiones.
+
+> 📜 Paso 4: Configurar Swagger con soporte para versionado
+Agregar después del bloque anterior:
+
+csharp
+builder.Services.AddSwaggerGen(options =>
+{
+    var provider = builder.Services.BuildServiceProvider()
+                                   .GetRequiredService<IApiVersionDescriptionProvider>();
+
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc(description.GroupName, new OpenApiInfo
+        {
+            Title = $"GestionAdminPolicial API {description.ApiVersion}",
+            Version = description.ApiVersion.ToString(),
+            Description = "Documentación de la API versionada",
+        });
+    }
+
+    // ✅ Comentarios XML
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+});
+💡 Esto genera automáticamente una pestaña Swagger por versión (v1, v2, etc.) y carga los comentarios <summary> y <remarks> desde el código XML.
+
+> 🌐 Paso 5: Configurar el uso de Swagger en el pipeline
+Después de app.Build(), agregar:
+
+csharp
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                                $"API {description.GroupName.ToUpperInvariant()}");
+    }
+});
+
+app.MapControllers();
+🔹 Esto habilita la interfaz Swagger UI con selector de versión (por ejemplo: v1, v2).
+
+> 🧾 Paso 6: Activar generación de comentarios XML
+En tu proyecto web:
+
+Abrí las propiedades del proyecto (clic derecho → Propiedades → Compilación).
+
+Activá la opción “Archivo de documentación XML”.
+
+Visual Studio generará un archivo como:
+
+Código
+GestionAdminPolicial.AplicacionWeb.xml
+Dentro de la carpeta bin\Debug\net8.0\.
+
+🔹 Esto permite que Swagger lea los comentarios de los controladores y endpoints.
+
+> 📘 Paso 7: Documentar los controladores
+En tus controladores API, agregá documentación XML con etiquetas estándar:
+
+csharp
+/// <summary>
+/// Obtiene los datos completos de un personal policial para edición.
+/// </summary>
+/// <remarks>
+/// Este endpoint se utiliza para cargar el formulario de edición de un personal policial,
+/// devolviendo todos los datos relacionados, como armas y domicilios.
+/// </remarks>
+/// <param name="id">ID único del personal policial.</param>
+/// <returns>Objeto <see cref="VMPersonalPolicial"/> con los datos completos.</returns>
+/// <response code="200">Datos obtenidos correctamente.</response>
+/// <response code="404">No se encontró el personal con el ID especificado.</response>
+/// <response code="500">Error interno del servidor.</response>
+[HttpGet("ObtenerPersonalParaEditar/{id}")]
+[ProducesResponseType(typeof(VMPersonalPolicial), StatusCodes.Status200OK)]
+[ProducesResponseType(StatusCodes.Status404NotFound)]
+[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+public async Task<IActionResult> ObtenerPersonalParaEditar(int id)
+{
+    // Lógica del endpoint
+}
+🧠 Consejo: mantener consistencia en la estructura de <summary>, <remarks> y <response> mejora la legibilidad del Swagger UI.
+
+> ⚡ Paso 8: Ejecutar y probar
+Ejecutá la aplicación desde Visual Studio o terminal:
+
+bash
+dotnet run --project GestionAdminPolicial.AplicacionWeb
+Accedé al explorador Swagger:
+
+Código
+https://localhost:<puerto>/swagger
+Verás una interfaz con versiones disponibles:
+
+v1 → primera versión estable
+
+v2 → versiones futuras o endpoints extendidos
+
+---
+---
+
+## 👨‍💻 Autor by:
+- **"Juan José Richard" Arroyo**

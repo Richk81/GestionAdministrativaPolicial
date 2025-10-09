@@ -54,7 +54,7 @@ $(document).ready(function () {
         responsive: true,
         autoWidth: false,
         ajax: {
-            url: '/PersonalTrasladado/ListaTrasladados',
+            url: '/api/v1/ApiPersonal/ListaTrasladados',
             type: 'GET',
             dataType: 'json',
             dataSrc: 'data', // <- aquí indicamos que DataTables use json.data
@@ -149,7 +149,7 @@ $("#tbdataPersonalTrasladado tbody").on("click", ".btn-ver", function () {
 
     $.ajax({
         type: "GET",
-        url: `/ObtenerPersonalParaEditar/${idPersonal}`, // misma ruta que usabas para editar
+        url: `/api/v1/ApiPersonal/ObtenerPersonalParaEditar/${idPersonal}`, // misma ruta que usabas para editar
         success: function (personal) {
             // Llenar modal solo lectura
             $("#lblLegajo").text(personal.legajo || "---");
@@ -215,7 +215,7 @@ $("#tbdataPersonalTrasladado tbody").on("click", ".btn-restituir", function () {
             // Llamada al back-end para restituir
             $.ajax({
                 type: "PUT",
-                url: `/restituir/${idPersonal}`, // 🔹 aquí la ruta REST
+                url: `/api/v1/ApiPersonal/restituir/${idPersonal}`, //aquí la ruta REST
                 success: function (response) {
                     $(".showSweetAlert").LoadingOverlay("hide");
                     if (response.estado) {
