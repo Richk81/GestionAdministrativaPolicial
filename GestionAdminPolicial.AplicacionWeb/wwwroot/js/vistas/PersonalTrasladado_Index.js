@@ -75,12 +75,6 @@ $(document).ready(function () {
                     return meta.row + 1; // numeración automática
                 }
             },
-            {
-                data: "urlImagen",
-                render: function (data) {
-                    return `<img style="height:60px" src="${data || '/img/noimage.png'}" class="rounded mx-auto d-block"/>`;
-                }
-            },
             { data: "legajo" },
             { data: "apellidoYNombre" },
             { data: "grado" },
@@ -115,7 +109,7 @@ $(document).ready(function () {
                 }
             }
         ],
-        order: [[5, "desc"]],
+        order: [[4, "desc"]],
         dom: "Bfrtip",
         buttons: [
             {
@@ -123,7 +117,7 @@ $(document).ready(function () {
                 extend: 'excelHtml5',
                 title: '',
                 filename: 'Reporte_PersonalTrasladado',
-                exportOptions: { columns: [0, 1, 2, 3, 4, 5] }
+                exportOptions: { columns: [0, 1, 2, 3, 4] }
             },
             'pageLength'
         ],

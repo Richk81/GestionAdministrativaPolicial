@@ -40,11 +40,9 @@ $(document).ready(function () {
              "url": '/api/v1/ApiUsuario/ListaUsuarios',
              "type": "GET",
              "datatype": "json",
-             //"dataSrc": "data"  // <-- aquí le decís a DataTables que los datos reales están en data
          },
          "columns": [
              { "data": "idUsuario", "visible": false, "searchable": false },
-             { "data": "urlFoto", "visible": false },  // <-- ocultamos la foto
              { "data": "nombre" },
              { "data": "correo" },
              { "data": "telefono" },
@@ -74,7 +72,7 @@ $(document).ready(function () {
                 title: '',
                 filename: 'Reporte Usuarios',
                 exportOptions: {
-                    columns: [2,3,4,5,6]
+                    columns: [1,2,3,4,5]
                 }
             }, 'pageLength'
         ],

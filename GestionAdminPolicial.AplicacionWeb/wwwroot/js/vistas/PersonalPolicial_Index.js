@@ -69,18 +69,6 @@ $(document).ready(function () {
                 orderable: false,
                 searchable: false
             },
-            {
-                data: "urlImagen",
-                render: function (data) {
-                    // Si hay una imagen válida, la mostramos
-                    if (data && data.trim() !== "") {
-                        return `<img style="height:60px; width:60px; object-fit:cover;" src="${data}" class="rounded mx-auto d-block" />`;
-                    } else {
-                        // Si no hay imagen, dejamos el espacio vacío (sin error 404)
-                        return `<div style="height:60px; width:60px; background-color:#f2f2f2; border-radius:8px; margin:auto;"></div>`;
-                    }
-                }
-            },
             { data: "legajo" },
             { data: "apellidoYNombre" },
             { data: "grado" },
@@ -109,7 +97,7 @@ $(document).ready(function () {
                 }
             }
         ],
-        order: [[2, "asc"]],
+        order: [[1, "asc"]],
         dom: "Bfrtip",
         buttons: [
             {
@@ -117,7 +105,7 @@ $(document).ready(function () {
                 extend: 'excelHtml5',
                 title: '',
                 filename: 'Reporte_PersonalPolicial',
-                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7] }
+                exportOptions: { columns: [1, 2, 3, 4, 5] }
             },
             'pageLength'
         ],
