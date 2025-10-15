@@ -39,17 +39,12 @@ $(document).ready(function () {
          "ajax": {
              "url": '/api/v1/ApiUsuario/ListaUsuarios',
              "type": "GET",
-             "datatype": "json"
+             "datatype": "json",
+             //"dataSrc": "data"  // <-- aquí le decís a DataTables que los datos reales están en data
          },
          "columns": [
-             { "data": "idUsuario","visible":false, "searchable":false},
-             {
-                 "data": "urlFoto",
-                 render: function (data) {
-                     const url = data && data.trim() !== "" ? data : "/img/nousuario.jpg";
-                     return `<img style="height:60px" src="${url}" class="rounded mx-auto d-block"/>`;
-                 }
-             },
+             { "data": "idUsuario", "visible": false, "searchable": false },
+             { "data": "urlFoto", "visible": false },  // <-- ocultamos la foto
              { "data": "nombre" },
              { "data": "correo" },
              { "data": "telefono" },
@@ -101,15 +96,6 @@ function mostrarModal(modelo = MODELO_BASE ) {
 
     $("#cboEstado").val(modelo.esActivo);
 
-    // Limpiar input file
-    $("#txtFoto").val("");
-    // Asignar imagen, usando la por defecto si no hay foto del usuario
-    const urlFoto = modelo.urlFoto && modelo.urlFoto.trim() !== ""
-        ? modelo.urlFoto
-        : "/img/nousuario.jpg"; // ruta de tu imagen por defecto
-    $("#imgUsuario").attr("src", urlFoto);
-
-
     $("#modalData").modal("show");
 }
 
@@ -141,10 +127,8 @@ $("#btnGuardar").click(function () {
     modelo["idRol"] = parseInt($("#cboRol").val());
     modelo["esActivo"] = parseInt($("#cboEstado").val());
 
-    // 🔹 Imagen
-    const inputFoto = document.getElementById("txtFoto");
+
     const formData = new FormData();
-    formData.append("foto", inputFoto.files[0])
     formData.append("modelo", JSON.stringify(modelo))
 
     $("#modalData").find("div.modal-content").LoadingOverlay("show");

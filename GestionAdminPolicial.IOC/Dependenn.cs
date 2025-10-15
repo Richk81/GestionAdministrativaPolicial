@@ -33,8 +33,6 @@ namespace GestionAdminPolicial.IOC
             //services.AddScoped<IPersonalRepository, PersonalRepository>();
 
             services.AddScoped<ICorreoService, CorreoService>();
-
-            services.AddScoped<IFireBaseService, FireBaseService>();
             
             services.AddScoped<IUtilidadesService, UtilidadesService>();
             

@@ -103,7 +103,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         /// Este endpoint permite registrar un nuevo personal policial, incluyendo su información general,
         /// armas asignadas, domicilios y una imagen opcional. Los datos deben enviarse como un formulario multipart.
         /// </remarks>
-        /// <param name="foto">Archivo de imagen del personal (opcional). Se recomienda formato JPG o PNG.</param>
         /// <param name="modelo">Cadena JSON con los datos del personal, incluyendo relaciones como armas y domicilios.</param>
         /// <returns>
         /// Retorna un objeto <see cref="GenericResponse{VMPersonalPolicial}"/> con el estado de la operación y el personal creado.
@@ -123,18 +122,14 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
 
             try
             {
+                //Deserializar el modelo recibido
                 var vmPersonal = JsonConvert.DeserializeObject<VMPersonalPolicial>(modelo);
-                string nombreFoto = "";
+
+                //No manejamos fotos (pero mantenemos la firma por compatibilidad)
+                string nombreFoto = null;
                 Stream fotoStream = null;
 
-                if (foto != null)
-                {
-                    string nombre_en_codigo = Guid.NewGuid().ToString("N");
-                    string extension = Path.GetExtension(foto.FileName);
-                    nombreFoto = string.Concat(nombre_en_codigo, extension);
-                    fotoStream = foto.OpenReadStream();
-                }
-
+                //Obtener el usuario autenticado
                 ClaimsPrincipal claimUser = HttpContext.User;
                 if (claimUser.Identity.IsAuthenticated)
                 {
@@ -158,13 +153,16 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                     }
                 }
 
+                //Crear el Personal Policial (foto y nombreFoto se envían como null)
                 var personalCreado = await _personalServicio.Crear(
                     _mapper.Map<PersonalPolicial>(vmPersonal),
                     fotoStream,
                     nombreFoto
                 );
 
+                //Mapear la entidad creada al ViewModel para devolverla
                 vmPersonal = _mapper.Map<VMPersonalPolicial>(personalCreado);
+
                 genericResponse.Estado = true;
                 genericResponse.Objeto = vmPersonal;
             }
@@ -184,7 +182,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         /// Este endpoint permite actualizar la información de un personal policial, incluyendo sus datos generales,
         /// armas asignadas, domicilios y una imagen opcional. Los datos deben enviarse como un formulario multipart.
         /// </remarks>
-        /// <param name="foto">Archivo de imagen actualizado del personal (opcional). Se recomienda formato JPG o PNG.</param>
         /// <param name="modelo">Cadena JSON con los datos actualizados del personal, incluyendo relaciones como armas y domicilios.</param>
         /// <returns>
         /// Retorna un objeto <see cref="GenericResponse{VMPersonalPolicial}"/> con el estado de la operación y el personal actualizado.
@@ -206,17 +203,12 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
             try
             {
                 var vmPersonal = JsonConvert.DeserializeObject<VMPersonalPolicial>(modelo);
-                string nombreFoto = "";
+
+                //No manejamos fotos
+                string nombreFoto = null;
                 Stream fotoStream = null;
 
-                if (foto != null)
-                {
-                    string nombre_en_codigo = Guid.NewGuid().ToString("N");
-                    string extension = Path.GetExtension(foto.FileName);
-                    nombreFoto = string.Concat(nombre_en_codigo, extension);
-                    fotoStream = foto.OpenReadStream();
-                }
-
+                //Obtener usuario autenticado
                 ClaimsPrincipal claimUser = HttpContext.User;
                 if (claimUser.Identity.IsAuthenticated)
                 {
@@ -241,13 +233,16 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                     }
                 }
 
+                //Editar el personal policial (fotoStream y nombreFoto = null)
                 var personalEditado = await _personalServicio.Editar(
                     _mapper.Map<PersonalPolicial>(vmPersonal),
                     fotoStream,
                     nombreFoto
                 );
 
+                //Mapear de nuevo a ViewModel
                 vmPersonal = _mapper.Map<VMPersonalPolicial>(personalEditado);
+
                 genericResponse.Estado = true;
                 genericResponse.Objeto = vmPersonal;
             }

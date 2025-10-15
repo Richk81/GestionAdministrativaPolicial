@@ -112,7 +112,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         /// y, opcionalmente, una foto a través de un formulario multipart/form-data.
         /// También se genera un enlace de plantilla de correo para envío de clave inicial.
         /// </remarks>
-        /// <param name="foto">Archivo de imagen del usuario (opcional).</param>
         /// <param name="modelo">JSON con los datos del usuario a crear.</param>
         /// <returns>
         /// Retorna un objeto <see cref="GenericResponse{VMUsuario}"/> indicando si la operación fue exitosa,
@@ -132,16 +131,9 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
             {
                 VMUsuario vmUsuario = JsonConvert.DeserializeObject<VMUsuario>(modelo);
 
-                string nombreFoto = "";
+                //Ya no usamos foto
                 Stream fotoStream = null;
-
-                if (foto != null)
-                {
-                    string nombre_en_codigo = Guid.NewGuid().ToString("N");
-                    string extension = Path.GetExtension(foto.FileName);
-                    nombreFoto = string.Concat(nombre_en_codigo, extension);
-                    fotoStream = foto.OpenReadStream();
-                }
+                string nombreFoto = "";
 
                 string urlPlantillaCorreo = $"{this.Request.Scheme}://{this.Request.Host}/Plantilla/EnviarClave?correo=[correo]&clave=[clave]";
 
@@ -169,7 +161,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         /// Este endpoint permite actualizar los datos de un usuario enviando un JSON con la información
         /// y, opcionalmente, una nueva foto mediante un formulario multipart/form-data.
         /// </remarks>
-        /// <param name="foto">Archivo de imagen del usuario (opcional).</param>
         /// <param name="modelo">JSON con los datos del usuario a actualizar.</param>
         /// <returns>
         /// Retorna un objeto <see cref="GenericResponse{VMUsuario}"/> indicando si la operación fue exitosa,
@@ -189,17 +180,11 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
             {
                 VMUsuario vmUsuario = JsonConvert.DeserializeObject<VMUsuario>(modelo);
 
-                string nombreFoto = "";
+                //Ya no usamos la foto
                 Stream fotoStream = null;
+                string nombreFoto = "";
 
-                if (foto != null)
-                {
-                    string nombre_en_codigo = Guid.NewGuid().ToString("N");
-                    string extension = Path.GetExtension(foto.FileName);
-                    nombreFoto = string.Concat(nombre_en_codigo, extension);
-                    fotoStream = foto.OpenReadStream();
-                }
-
+                // Llamada al servicio, foto ignorada
                 Usuario usuario_editado = await _usuarioServicio.Editar(_mapper.Map<Usuario>(vmUsuario), fotoStream, nombreFoto);
 
                 vmUsuario = _mapper.Map<VMUsuario>(usuario_editado);

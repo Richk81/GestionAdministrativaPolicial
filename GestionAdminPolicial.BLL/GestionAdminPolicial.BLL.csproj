@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FirebaseAuthentication.net" Version="3.1.0" />
-    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GestionAdminPolicial.DAL\GestionAdminPolicial.DAL.csproj" />
     <ProjectReference Include="..\GestionAdminPolicial.Entity\GestionAdminPolicial.Entity.csproj" />
   </ItemGroup>

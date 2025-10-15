@@ -13,12 +13,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
     public class DependenciaPolService : IDependenciaPolService
     {
         private readonly IGenericRepository<Dependencia> _repositorio;
-        private readonly IFireBaseService _firebaseService;
 
-        public DependenciaPolService(IGenericRepository<Dependencia> repositorio, IFireBaseService firebaseService)
+        public DependenciaPolService(IGenericRepository<Dependencia> repositorio)
         {
             _repositorio = repositorio;
-            _firebaseService = firebaseService;
         }
 
         //NOTA: Este método está diseñado para obtener una dependencia específica con IdDependencia == 1.
@@ -45,15 +43,6 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 dependencia_encontrada.Correo = entidad.Correo;
                 dependencia_encontrada.Direccion = entidad.Direccion;
                 dependencia_encontrada.Telefono = entidad.Telefono;
-
-                dependencia_encontrada.NombreLogo = dependencia_encontrada.NombreLogo == "" ? NombreLogo : dependencia_encontrada.NombreLogo;
-
-                if (Logo != null)
-                {
-                    //Subir el logo a Firebase Storage
-                    string urlLogo = await _firebaseService.SubirStorage(Logo, "carpeta_logo", dependencia_encontrada.NombreLogo);
-                    dependencia_encontrada.UrlLogo = urlLogo;
-                }
 
                 //Guardar los cambios en la base de datos
                 await _repositorio.Editar(dependencia_encontrada);

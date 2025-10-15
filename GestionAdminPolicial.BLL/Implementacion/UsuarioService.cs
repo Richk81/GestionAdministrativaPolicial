@@ -20,20 +20,17 @@ namespace GestionAdminPolicial.BLL.Implementacion
     {
         //(SERVICIOS QUE VOY A UTILIZAR)   
         private readonly IGenericRepository<Usuario> _repositorio;
-        private readonly IFireBaseService _fireBaseService;
         private readonly IUtilidadesService _utilidadesService;
         private readonly ICorreoService _correoService;
 
         // Constructor de la clase UsuarioService
         public UsuarioService(
             IGenericRepository<Usuario> repositorio,
-            IFireBaseService fireBaseService,
             IUtilidadesService utilidadesService,
             ICorreoService correoService
             )
         {
             _repositorio = repositorio;
-            _fireBaseService = fireBaseService;
             _utilidadesService = utilidadesService;
             _correoService = correoService;
         }
@@ -59,14 +56,12 @@ namespace GestionAdminPolicial.BLL.Implementacion
             {
                 string clave_generada = _utilidadesService.GenerarClave();
                 entidad.Clave = _utilidadesService.ConvertirSha256(clave_generada);
-                entidad.NombreFoto = NombreFoto;
 
-                if (Foto != null)
-                {
-                    string url_foto = await _fireBaseService.SubirStorage(Foto, "carpeta_usuario", NombreFoto);
-                    entidad.UrlFoto = url_foto;
-                }
+                //Como ya no usamos fotos, dejamos null los campos
+                entidad.NombreFoto = null;
+                entidad.UrlFoto = null;
 
+                // Guardar usuario en la base
                 Usuario usuario_creado = await _repositorio.Crear(entidad);
 
                 if (usuario_creado.IdUsuario == 0)
@@ -101,6 +96,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                     }
                 }
 
+                // Traer datos completos del usuario con rol
                 IQueryable<Usuario> query = await _repositorio.Consultar(u => u.IdUsuario == usuario_creado.IdUsuario);
                 usuario_creado = query.Include(r => r.IdRolNavigation).First();
 
@@ -115,6 +111,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
         //Lógica del método Editar usuarios
         public async Task<Usuario> Editar(Usuario entidad, Stream Foto = null, string NombreFoto = "")
         {
+            // Verificar que no exista otro usuario con el mismo correo
             Usuario usuario_existe = await _repositorio.Obtener(u => u.Correo == entidad.Correo && u.IdUsuario != entidad.IdUsuario);
 
             if (usuario_existe != null)
@@ -123,6 +120,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
 
             try
             {
+                // Obtener usuario a editar
                 IQueryable<Usuario> queryUsuario = await _repositorio.Consultar(u => u.IdUsuario == entidad.IdUsuario);
                 
                 Usuario usuario_editar = queryUsuario.First();
@@ -133,20 +131,17 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 usuario_editar.IdRol = entidad.IdRol;
                 usuario_editar.EsActivo = entidad.EsActivo;
 
-                if (usuario_editar.NombreFoto =="")
-                    usuario_editar.NombreFoto = NombreFoto;
+                //Como no usamos fotos, dejamos los campos en null
+                usuario_editar.NombreFoto = null;
+                usuario_editar.UrlFoto = null;
 
-                if(Foto != null)
-                {
-                    string urlfoto = await _fireBaseService.SubirStorage(Foto, "carpeta_usuario", usuario_editar.NombreFoto);
-                    usuario_editar.UrlFoto = urlfoto;
-                }
-
+                // Guardar cambios en la base de datos
                 bool respuesta = await _repositorio.Editar(usuario_editar);
 
                 if(!respuesta)
                     throw new TaskCanceledException("No se pudo editar el usuario.");
 
+                // Traer usuario actualizado con rol
                 Usuario usuario_editado = queryUsuario.Include(r => r.IdRolNavigation).First();
                 
                 return usuario_editado;
@@ -157,7 +152,6 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 throw new Exception("Error al editar el usuario: " + ex.Message);
             }
 
-
         }
 
         // Implementación del método eliminar USUARIO
@@ -165,16 +159,18 @@ namespace GestionAdminPolicial.BLL.Implementacion
         {
             try
             {
+                // Buscar usuario
                 Usuario usuario_encontrado = await _repositorio.Obtener(u => u.IdUsuario == IdUsuario);
 
                 if (usuario_encontrado == null)
                     throw new TaskCanceledException("El usuario no existe.");
 
-                string nombreFoto = usuario_encontrado.NombreFoto;
+                //Ya no usamos Firebase ni fotos, solo eliminamos el registro
                 bool respuesta = await _repositorio.Eliminar(usuario_encontrado);
 
-                if(respuesta)
-                    await _fireBaseService.EliminarStorage("carpeta_usuario", nombreFoto);
+
+                if (!respuesta)
+                    throw new TaskCanceledException("No se pudo eliminar el usuario.");
 
                 return true;
 

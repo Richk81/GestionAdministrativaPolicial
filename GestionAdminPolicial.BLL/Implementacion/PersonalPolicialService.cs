@@ -20,23 +20,15 @@ namespace GestionAdminPolicial.BLL.Implementacion
     {
         //(SERVICIOS QUE VOY A UTILIZAR)   
         private readonly IGenericRepository<PersonalPolicial> _repositorio;
-        //private readonly IGenericRepository<Domicilio> _repositorioDomicilio;
-        //private readonly IGenericRepository<Arma> _repositorioArma;
-        private readonly IFireBaseService _fireBaseService;
+
+
 
         // Constructor de la clase PersonalPolicialService
         public PersonalPolicialService(
-            IGenericRepository<PersonalPolicial> repositorio,
-            IGenericRepository<Domicilio> repositorioDomicilio,
-            IGenericRepository<Arma> repositorioArma,
-            IFireBaseService fireBaseService
+            IGenericRepository<PersonalPolicial> repositorio
             )
         {
             _repositorio = repositorio;
-            //_repositorioDomicilio = repositorioDomicilio;
-            //_repositorioArma = repositorioArma;
-            _fireBaseService = fireBaseService;
-
         }
 
         //Lógica del método listar PersonalPolicial Activo
@@ -67,7 +59,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
             return await query.ToListAsync();
         }
 
-        // ✅ METODO para Crear un NUEVO PERSONAL POLICIAL (registrar nuevo)
+        //METODO para Crear un NUEVO PERSONAL POLICIAL (registrar nuevo)
         public async Task<PersonalPolicial> Crear(PersonalPolicial entidad, Stream Foto = null, string NombreFoto = "")
         {
             try
@@ -75,16 +67,12 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 // Valores por defecto
                 entidad.Trasladado = false;
                 entidad.FechaEliminacion = null;
-                entidad.NombreImagen = NombreFoto;
 
-                // ✅ Subida de imagen a Firebase
-                if (Foto != null)
-                {
-                    string urlImagen = await _fireBaseService.SubirStorage(Foto, "carpeta_personal", NombreFoto);
-                    entidad.UrlImagen = urlImagen;
-                }
+                //Si no se usa imagen, dejar los campos en null
+                entidad.NombreImagen = null;
+                entidad.UrlImagen = null;
 
-                // ✅ Normalizar valores en Armas antes de guardar
+                //Normalizar valores en Armas antes de guardar
                 if (entidad.Armas != null && entidad.Armas.Any())
                 {
                     foreach (var arma in entidad.Armas)
@@ -94,13 +82,13 @@ namespace GestionAdminPolicial.BLL.Implementacion
                     }
                 }
 
-                // ✅ Crear Personal con hijos (Armas + Domicilios) en UNA sola operación
+                //Crear Personal con hijos (Armas + Domicilios) en UNA sola operación
                 PersonalPolicial personalCreado = await _repositorio.Crear(entidad);
 
                 if (personalCreado.IdPersonal == 0)
                     throw new TaskCanceledException("No se pudo crear el personal policial.");
 
-                // ✅ Traer la entidad ya con sus relaciones
+                //Traer la entidad ya con sus relaciones
                 IQueryable<PersonalPolicial> query = await _repositorio.Consultar(p => p.IdPersonal == personalCreado.IdPersonal);
 
                 personalCreado = await query
@@ -118,12 +106,12 @@ namespace GestionAdminPolicial.BLL.Implementacion
         }
 
 
-        // ✅ MÉTODO para Editar un PERSONAL POLICIAL existente
+        //MÉTODO para Editar un PERSONAL POLICIAL existente
         public async Task<PersonalPolicial> Editar(PersonalPolicial entidad, Stream Foto = null, string NombreFoto = "")
         {
             try
             {
-                // ✅ Buscar la entidad actual en BD
+                //Buscar la entidad actual en BD
                 IQueryable<PersonalPolicial> query = await _repositorio.Consultar(p => p.IdPersonal == entidad.IdPersonal);
 
                 PersonalPolicial personalExistente = await query
@@ -135,7 +123,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 if (personalExistente == null)
                     throw new Exception("El personal policial no existe en la base de datos.");
 
-                // ✅ Actualizar propiedades principales
+                //Actualizar propiedades principales
                 personalExistente.Legajo = entidad.Legajo;
                 personalExistente.ApellidoYnombre = entidad.ApellidoYnombre;
                 personalExistente.Grado = entidad.Grado;
@@ -157,15 +145,11 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 personalExistente.DestinoAnterior = entidad.DestinoAnterior;
                 personalExistente.Email = entidad.Email;
 
-                // ✅ Manejo de imagen (si viene nueva foto)
-                if (Foto != null)
-                {
-                    string urlImagen = await _fireBaseService.SubirStorage(Foto, "carpeta_personal", NombreFoto);
-                    personalExistente.NombreImagen = NombreFoto;
-                    personalExistente.UrlImagen = urlImagen;
-                }
+                //Ya no se maneja imagen: dejar los campos como null
+                personalExistente.NombreImagen = null;
+                personalExistente.UrlImagen = null;
 
-                // ✅ Actualizar Armas existentes
+                // Actualizar Armas existentes
                 foreach (var arma in entidad.Armas)
                 {
                     var armaExistente = personalExistente.Armas.FirstOrDefault(a => a.IdArma == arma.IdArma);
