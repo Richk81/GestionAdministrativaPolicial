@@ -53,24 +53,25 @@ fechaRegistro datetime default getdate()
 
 go
 
-create table Dependencia(
-idDependencia int primary key,
-urlLogo varchar(500),
-nombreLogo varchar(100),
-nombre varchar(50),
-correo varchar(50),
-direccion varchar(50),
-telefono varchar(50),
-)
+CREATE TABLE Dependencia (
+    IdDependencia INT PRIMARY KEY IDENTITY(1,1),
+    IdUsuario INT NULL REFERENCES Usuario(IdUsuario), -- Usuario que puede modificar los datos de la dependencia
+    UrlLogo VARCHAR(500),
+    NombreLogo VARCHAR(100),
+    Nombre VARCHAR(50),
+    Correo VARCHAR(50),
+    Direccion VARCHAR(100),
+    Telefono VARCHAR(50),
+    FechaRegistro DATETIME DEFAULT GETDATE()
+);
 
 go
 
-select * from Configuracion
 create table Configuracion(
 recurso varchar(50),
 propiedad varchar(50),
 valor varchar(60)
-)
+);
 
 go
 

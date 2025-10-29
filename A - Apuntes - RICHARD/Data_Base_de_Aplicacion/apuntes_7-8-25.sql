@@ -8,7 +8,9 @@ select * from Dependencia
 DELETE FROM Usuario
 WHERE idUsuario = 8;
 
-SELECT * FROM Configuracion
+SELECT * FROM Usuario
+
+DELETE FROM Configuracion WHERE Recurso = 'FireBase_Storage';
 
 --________________________________ INSERTAR ROLES ________________________________
 insert into rol(descripcion,esActivo) values

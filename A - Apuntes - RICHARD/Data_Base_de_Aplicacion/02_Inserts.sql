@@ -43,8 +43,8 @@ insert into Configuracion(recurso,propiedad,valor) values
 --________________________________ INSERTAR LA DEPENDENCIA POLICIAL _______________________________
 select * from Dependencia
 
-insert into Dependencia(idDependencia,urlLogo,nombreLogo,nombre,correo,direccion,telefono)
-values(1,'','','','','','')
+INSERT INTO Dependencia (IdDependencia, IdUsuario, UrlLogo, NombreLogo, Nombre, Correo, Direccion, Telefono)
+VALUES (1, NULL, '', '', '', '', '', '');
 
 --________________________________ INSERTAR MENUS ________________________________
 select * from RolMenu
@@ -130,4 +130,7 @@ SELECT 3, idMenu, 1
 FROM Menu 
 WHERE descripcion IN ('DashBoard', 'Reportes')
    OR idMenuPadre IN (SELECT idMenu FROM Menu WHERE descripcion = 'Reportes');
+
+
+
 
