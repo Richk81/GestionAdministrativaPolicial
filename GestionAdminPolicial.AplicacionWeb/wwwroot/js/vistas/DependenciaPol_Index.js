@@ -1,49 +1,45 @@
-﻿
+﻿$(function () {
 
-$(function () {
-
-    //mostrar el overlay una rueda cargando
+    // Mostrar el overlay de carga
     $(".card-body").LoadingOverlay("show");
 
-    // Inicializar el combo de roles
+    // Obtener datos de la dependencia
     fetch("/Division/Obtener")
         .then(response => {
-            $(".card-body").LoadingOverlay("hide"); //oculta el overlay una rueda cargando
+            $(".card-body").LoadingOverlay("hide");
             return response.ok ? response.json() : Promise.reject(response);
         })
         .then(responseJson => {
-
-            console.log(responseJson);
-
             if (responseJson.estado) {
-                const d = responseJson.objeto; //variable que almacena nuestro objeto (nombre, id, etc)
+                const d = responseJson.objeto;
 
                 $("#txtRazonSocial").val(d.nombre);
                 $("#txtCorreo").val(d.correo);
                 $("#txtDireccion").val(d.direccion);
                 $("#txtTelefono").val(d.telefono);
-                $("#imgLogo").attr("src", d.urlLogo);
-
             } else {
-                swal("Lo sentimos", responseJson.mensaje, "error")
-
+                swal("Lo sentimos", responseJson.mensaje, "error");
             }
         })
+        .catch(error => {
+            $(".card-body").LoadingOverlay("hide");
+            console.error(error);
+            swal("Error", "No se pudieron cargar los datos de la dependencia", "error");
+        });
 
-})
+});
 
+// Guardar cambios al presionar el botón
 $("#btnGuardarCambios").on("click", function () {
 
-    // IMPORTANTE: Validar campos requeridos; de los impus o caja de textos (nombre, telefono, direccion, etc.)
+    // Validar campos requeridos
     const inputs = $("input.input-validar").serializeArray();
-    const inputs_sin_valor = inputs.filter((item) => item.value.trim() === "")
+    const inputs_sin_valor = inputs.filter(item => item.value.trim() === "");
 
     if (inputs_sin_valor.length > 0) {
-        // Si hay campos sin valor, mostramos un mensaje y enfocamos el primer campo vacío, acá lo creamos y los mostramos con toastr
         const mensaje = `Debe completar los siguientes campos: "${inputs_sin_valor[0].name}"`;
-        toastr.warning("", mensaje) // <-- Aquí está el toastr libreria para mostrar mensajes en pantalla
+        toastr.warning("", mensaje);
         document.querySelector(`input[name=${inputs_sin_valor[0].name}]`).focus();
-
         return;
     }
 
@@ -52,41 +48,32 @@ $("#btnGuardarCambios").on("click", function () {
         correo: $("#txtCorreo").val(),
         direccion: $("#txtDireccion").val(),
         telefono: $("#txtTelefono").val(),
-    }
+    };
 
-    const inputLogo = document.getElementById("txtNombreLogo")
+    const formData = new FormData();
+    formData.append("modelo", JSON.stringify(modelo));
 
-    const formData = new FormData()
-
-    formData.append("logo", inputLogo.files[0])
-    formData.append("modelo", JSON.stringify(modelo))
-
-    //mostrar el overlay una rueda cargando
     $(".card-body").LoadingOverlay("show");
 
-    // Inicializar el combo de roles
     fetch("/Division/GuardarCambios", {
         method: "POST",
         body: formData
     })
         .then(response => {
-            $(".card-body").LoadingOverlay("hide"); //oculta el overlay una rueda cargando
+            $(".card-body").LoadingOverlay("hide");
             return response.ok ? response.json() : Promise.reject(response);
         })
         .then(responseJson => {
-
             if (responseJson.estado) {
-                const d = responseJson.objeto; //variable que almacena nuestro objeto (nombre, id, etc)
-
-                $("#imgLogo").attr("src", d.urlLogo)
-
-                // ✅ Mensaje de confirmación
-                swal("Listo", "Cambios Actualizados Correctamente", "success");
-
+                swal("Listo", "Cambios actualizados correctamente", "success");
             } else {
-                swal("Lo sentimos", responseJson.mensaje, "error")
-
+                swal("Lo sentimos", responseJson.mensaje, "error");
             }
         })
+        .catch(error => {
+            $(".card-body").LoadingOverlay("hide");
+            console.error(error);
+            swal("Error", "Ocurrió un problema al guardar los datos", "error");
+        });
 
-})
+});

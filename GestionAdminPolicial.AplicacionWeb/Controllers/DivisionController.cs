@@ -60,8 +60,7 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         }
 
         [HttpPost]
-        // Método para guardar los cambios en la dependencia
-        public async Task<IActionResult> GuardarCambios([FromForm]IFormFile logo, [FromForm] string modelo)
+        public async Task<IActionResult> GuardarCambios([FromForm]IFormFile? logo, [FromForm] string modelo)
         {
             GenericResponse<VMDependenciaPol> genericResponse = new GenericResponse<VMDependenciaPol>();
 
@@ -69,7 +68,7 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
             {
                 VMDependenciaPol vmDependenciaPol = JsonConvert.DeserializeObject<VMDependenciaPol>(modelo);
 
-                string nombreLogo = "";
+                string? nombreLogo = null;
                 Stream logoStream = null;
 
                 if(logo != null)
