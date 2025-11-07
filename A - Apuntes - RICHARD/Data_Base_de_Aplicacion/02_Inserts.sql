@@ -7,14 +7,14 @@ insert into rol(descripcion,esActivo) values
 
 
 --________________________________ INSERTAR USUARIOS ________________________________
-SELECT * FROM Usuario
+SELECT * FROM CHALECO
 --clave : 123
 insert into Usuario(nombre,correo,telefono,idRol,urlFoto,nombreFoto,clave,esActivo) values
 ('911','codigo@example.com','909090',1,'','','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',1)
 
 INSERT INTO Usuario (nombre, correo, telefono, idRol, urlFoto, nombreFoto, clave, esActivo)
 VALUES
-('Admin X', 'empleado@example.com', '909090', 1, '', '', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+('Admin X', 'admin@example.com', '909090', 1, '', '', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
 ('Empleado X', 'empleado@example.com', '808080', 2, '', '', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
 ('Supervisor X', 'supervisor@example.com', '707070', 3, '', '', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
@@ -134,3 +134,16 @@ WHERE descripcion IN ('DashBoard', 'Reportes')
 
 
 
+-- PARA PRUEBAS:
+
+-- INSERTS de prueba para la tabla Chaleco (todos disponibles)
+INSERT INTO Chaleco (SerieChaleco, IdUsuario, MarcaYmodelo, Talle, AnoFabricacion, AnoVencimiento, EstadoChaleco, Observaciones, IdPersonal)
+VALUES 
+('CHL001', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'M', '2020-01-15', '2025-01-15', 'Nuevo', 'Chaleco disponible', NULL),
+('CHL002', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'L', '2019-06-10', '2024-06-10', 'Bueno', 'Chaleco disponible', NULL),
+('CHL003', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'S', '2021-03-20', '2026-03-20', 'Regular', 'Chaleco disponible', NULL),
+('CHL004', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'M', '2018-11-05', '2023-11-05', 'Usado', 'Chaleco disponible', NULL),
+('CHL005', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'XXL', '2022-07-12', '2027-07-12', 'Nuevo', 'Chaleco disponible', NULL);
+
+-- Verificar los datos
+SELECT * FROM Chaleco;

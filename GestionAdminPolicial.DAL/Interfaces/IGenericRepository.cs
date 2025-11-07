@@ -16,5 +16,10 @@ namespace GestionAdminPolicial.DAL.Interfaces
         Task<bool>  Editar(TEntity entidad);
         Task<bool> Eliminar(TEntity entidad);
         Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null);
+
+        Task<bool> Existe(Expression<Func<TEntity, bool>> filtro);
+
+        Task<bool> ActualizarCampo(TEntity entidad, Expression<Func<TEntity, object>> property);
+
     }
 }

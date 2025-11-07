@@ -244,13 +244,6 @@ namespace GestionAdminPolicial.BLL.Implementacion
             }
         }
 
-
-
-
-
-
-
-
         public async Task<PersonalPolicial> ObtenerPorId(int idPersonal)
         {
             // Obtenemos IQueryable desde el repositorio

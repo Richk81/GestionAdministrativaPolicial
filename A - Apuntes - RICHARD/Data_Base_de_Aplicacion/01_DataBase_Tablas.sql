@@ -135,7 +135,7 @@ CREATE TABLE Chaleco (
 IdChaleco INT IDENTITY(1,1) PRIMARY KEY,
 SerieChaleco VARCHAR(255),
 IdUsuario INT REFERENCES Usuario(IdUsuario),
-MarcaYModelo NVARCHAR(255),
+MarcaYmodelo NVARCHAR(255),
 Talle NVARCHAR(50),
 AnoFabricacion DATE,
 AnoVencimiento DATE,

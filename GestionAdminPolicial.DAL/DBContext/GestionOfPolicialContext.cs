@@ -92,8 +92,10 @@ public partial class GestionOfPolicialContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Talle).HasMaxLength(50);
 
-            entity.HasOne(d => d.IdPersonalNavigation).WithMany(p => p.Chalecos)
+            entity.HasOne(d => d.IdPersonalNavigation)
+                .WithMany(p => p.Chalecos)
                 .HasForeignKey(d => d.IdPersonal)
+                .IsRequired(false) // 👈 Esto es clave
                 .HasConstraintName("FK__Chaleco__IdPerso__59FA5E80");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Chalecos)

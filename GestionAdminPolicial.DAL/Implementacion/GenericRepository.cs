@@ -86,5 +86,39 @@ namespace GestionAdminPolicial.DAL.Implementacion
                 _dbcontext.Set<TEntity>().Where(filtro);
             return queryEntidad;
         }
+
+        public async Task<bool> Existe(Expression<Func<TEntity, bool>> filtro)
+        {
+            try
+            {
+                // AsNoTracking asegura que lea siempre desde la base y no desde el contexto en memoria
+                return await _dbcontext.Set<TEntity>().AsNoTracking().AnyAsync(filtro);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        // Método PATCH: actualizar solo un campo
+        public async Task<bool> ActualizarCampo(TEntity entidad, Expression<Func<TEntity, object>> property)
+        {
+            var entry = _dbcontext.Entry(entidad);
+
+            if (entry.State == EntityState.Detached)
+            {
+                _dbcontext.Attach(entidad);
+                entry = _dbcontext.Entry(entidad);
+            }
+
+            entry.Property(property).IsModified = true;
+
+            // 🔐 Asegurarse que EF no intente guardar navegación
+            entry.Reference("IdPersonalNavigation").CurrentValue = null;
+            await _dbcontext.SaveChangesAsync();
+            return true;
+        }
+
+
     }
 }

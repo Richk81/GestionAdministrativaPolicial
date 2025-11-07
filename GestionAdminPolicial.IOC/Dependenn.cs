@@ -46,6 +46,8 @@ namespace GestionAdminPolicial.IOC
 
             services.AddScoped<IPersonalPolicialService, PersonalPolicialService>();
 
+            services.AddScoped<IChalecoService, ChalecoService>();
+
         }
     }
 }

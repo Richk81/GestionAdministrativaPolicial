@@ -89,7 +89,7 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
             {
                 List<VMUsuario> vmUsuarioLista = _mapper.Map<List<VMUsuario>>(await _usuarioServicio.Lista());
 
-                // ✅ Envolvemos la lista en ResponseLista<T> para Swagger
+                //Envolvemos la lista en ResponseLista<T> para Swagger
                 var response = new ResponseLista<VMUsuario>
                 {
                     Data = vmUsuarioLista
