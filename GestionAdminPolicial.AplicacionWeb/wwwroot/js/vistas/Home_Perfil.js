@@ -3,7 +3,7 @@
     //mostrar el overlay una rueda cargando
     $(".container-fluid").LoadingOverlay("show");
 
-    fetch("/Home/ObtenerUsuario")
+    fetch("/api/v1/ApiHome/ObtenerUsuario")
         .then(response => {
             $(".container-fluid").LoadingOverlay("hide"); //oculta el overlay una rueda cargando
             return response.ok ? response.json() : Promise.reject(response);
@@ -13,7 +13,9 @@
             if (responseJson.estado) {
                 const d = responseJson.objeto; //variable que almacena nuestro objeto (nombre, id, etc)
 
-                $("#imgFoto").attr("src", d.urlFoto);
+
+                //$("#imgFoto").attr("src", urlFoto);
+
                 $("#txtNombre").val(d.nombre);
                 $("#txtCorreo").val(d.correo);
                 $("#txtTelefono").val(d.telefono); // 👈 corregido
@@ -59,7 +61,7 @@ $(function () {
         })
             .then(respuesta => {
                 if (respuesta) {
-                    // ✅ Si confirma el usuario
+                    // Si confirma el usuario
                     $(".container-fluid").LoadingOverlay("show"); // Mostrar overlay
 
                     const modelo = {
@@ -67,7 +69,7 @@ $(function () {
                         Telefono: $("#txtTelefono").val().trim()
                     };
 
-                    fetch("/Home/GuardarPerfil", {
+                    fetch("/api/v1/ApiHome/GuardarPerfil", {
                         method: "POST",
                         headers: { "Content-Type": "application/json; charset=utf-8" },
                         body: JSON.stringify(modelo)
@@ -141,7 +143,7 @@ $(function () {
                 };
 
 
-                fetch("/Home/CambiarClave", {
+                fetch("/api/v1/ApiHome/CambiarClave", {
                     method: "POST",
                     headers: { "Content-Type": "application/json; charset=utf-8" },
                     body: JSON.stringify(modelo)

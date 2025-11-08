@@ -7,7 +7,7 @@ insert into rol(descripcion,esActivo) values
 
 
 --________________________________ INSERTAR USUARIOS ________________________________
-SELECT * FROM CHALECO
+SELECT * FROM usuario
 --clave : 123
 insert into Usuario(nombre,correo,telefono,idRol,urlFoto,nombreFoto,clave,esActivo) values
 ('911','codigo@example.com','909090',1,'','','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',1)
@@ -144,6 +144,20 @@ VALUES
 ('CHL003', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'S', '2021-03-20', '2026-03-20', 'Regular', 'Chaleco disponible', NULL),
 ('CHL004', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'M', '2018-11-05', '2023-11-05', 'Usado', 'Chaleco disponible', NULL),
 ('CHL005', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'XXL', '2022-07-12', '2027-07-12', 'Nuevo', 'Chaleco disponible', NULL);
+
+INSERT INTO Chaleco (SerieChaleco, IdUsuario, MarcaYmodelo, Talle, AnoFabricacion, AnoVencimiento, EstadoChaleco, Observaciones, IdPersonal)
+VALUES 
+('CHL006', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'L', '2020-09-01', '2025-09-01', 'Nuevo', 'Chaleco disponible', NULL),
+('CHL007', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'M', '2019-04-22', '2024-04-22', 'Bueno', 'Chaleco disponible', NULL),
+('CHL008', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'XL', '2021-02-10', '2026-02-10', 'Regular', 'Chaleco disponible', NULL),
+('CHL009', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'S', '2018-08-15', '2023-08-15', 'Usado', 'Chaleco disponible', NULL),
+('CHL010', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'M', '2022-11-25', '2027-11-25', 'Nuevo', 'Chaleco disponible', NULL),
+('CHL011', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'L', '2019-12-30', '2024-12-30', 'Bueno', 'Chaleco disponible', NULL),
+('CHL012', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'S', '2021-05-05', '2026-05-05', 'Regular', 'Chaleco disponible', NULL),
+('CHL013', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'XL', '2018-10-18', '2023-10-18', 'Usado', 'Chaleco disponible', NULL),
+('CHL014', 12, 'MORON DOLPHIN BEYON DOLPHIN', 'XXL', '2020-03-11', '2025-03-11', 'Bueno', 'Chaleco disponible', NULL),
+('CHL015', 13, 'MORON DOLPHIN BEYON DOLPHIN', 'M', '2022-01-09', '2027-01-09', 'Nuevo', 'Chaleco disponible', NULL);
+
 
 -- Verificar los datos
 SELECT * FROM Chaleco;

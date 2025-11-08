@@ -9,8 +9,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Utilidades.ViewComponents
     public class MenuUsuarioViewComponent : ViewComponent
     {
 
-
-
         public async Task<IViewComponentResult> InvokeAsync()
         {
             ClaimsPrincipal claimUser = HttpContext.User;

@@ -37,51 +37,68 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         public IActionResult RestablecerClave()
         {
 
-
-
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(VMUsuarioLogin modelo)
         {
+            // Validar campos obligatorios antes de consultar la base de datos
+            if (string.IsNullOrWhiteSpace(modelo.Correo))
+            {
+                ViewData["Mensaje"] = "Debe ingresar un correo.";
+                return View(modelo);
+            }
 
+            if (string.IsNullOrWhiteSpace(modelo.Clave))
+            {
+                ViewData["Mensaje"] = "Debe ingresar una contraseña.";
+                return View(modelo);
+            }
+
+            // Intentar obtener al usuario con las credenciales
             Usuario usuario_encontrado = await _usuarioService.ObtenerPorCredenciales(modelo.Correo, modelo.Clave);
 
             if (usuario_encontrado == null)
             {
                 ViewData["Mensaje"] = "Credenciales incorrectas";
-
-                return View();
+                return View(modelo);
             }
+
             ViewData["Mensaje"] = null;
-            // Crear las claims para el usuario autenticado
+
+            // Crear las claims de manera segura, evitando nulls
             List<Claim> claims = new List<Claim>
-            {
-                 new Claim(ClaimTypes.Name, usuario_encontrado.Nombre),
-                new Claim(ClaimTypes.NameIdentifier, usuario_encontrado.IdUsuario.ToString()),
-                new Claim(ClaimTypes.Role, usuario_encontrado.IdRol.ToString()),
-                new Claim("UrlFoto", usuario_encontrado.UrlFoto),
-            };
+    {
+        new Claim(ClaimTypes.Name, usuario_encontrado.Nombre ?? string.Empty),
+        new Claim(ClaimTypes.NameIdentifier, usuario_encontrado.IdUsuario.ToString()),
+        new Claim(ClaimTypes.Role, usuario_encontrado.IdRol.ToString()),
+        new Claim("UrlFoto", usuario_encontrado.UrlFoto ?? string.Empty),
+        new Claim("Telefono", usuario_encontrado.Telefono ?? string.Empty),
+        new Claim("Correo", usuario_encontrado.Correo ?? string.Empty)
+    };
 
             // Crear el objeto ClaimsIdentity
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Crear el objeto ClaimsPrincipal
-            AuthenticationProperties properties = new AuthenticationProperties()
+            // Configurar las propiedades de autenticación
+            AuthenticationProperties properties = new AuthenticationProperties
             {
                 AllowRefresh = true,
-                IsPersistent = modelo.MantenerSesion, // Mantener la sesión si el usuario lo desea
+                IsPersistent = modelo.MantenerSesion
             };
 
+            // Iniciar sesión
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 properties
             );
 
-            return RedirectToAction("Index", "Home"); // Redirigir a la página principal después del inicio de sesión exitoso
+            // Redirigir al Home después de un login exitoso
+            return RedirectToAction("Index", "Home");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RestablecerClave(VMUsuarioLogin modelo)
