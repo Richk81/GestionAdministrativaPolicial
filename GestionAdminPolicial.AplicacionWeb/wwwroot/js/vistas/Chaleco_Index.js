@@ -15,29 +15,34 @@ let tablaPersonalModal;
 let chalecoSeleccionado;
 
 $(document).ready(function () {
-
     // ========================
     // Loader
     // ========================
     function showLoader() { $("#overlayLoader").show(); }
     function hideLoader() { $("#overlayLoader").hide(); }
 
-    // Tabla principal de chalecos
+    // Tabla principal de chalecos con paginación del lado del servidor
     tablaChalecos = $('#tbdataChalecos').DataTable({
         responsive: true,
         autoWidth: false,
+        serverSide: true, // 👈 Esto es clave
+        processing: true, // 👈 Muestra el loader de DataTables
         ajax: {
-            url: '/api/v1/ApiChaleco/Lista',
-            type: 'GET',
-            datatype: 'json',
-            dataSrc: 'data',
-            beforeSend: showLoader,
-            complete: hideLoader
+            url: '/api/v1/ApiChaleco/ListarPaginado',
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                console.log("Request enviado:", d); // 👈 Verificá que se envíe correctamente
+                return JSON.stringify(d);
+            },
+             dataSrc: 'data' // 👈 MUY IMPORTANTE: indica de dónde sacar los registros
         },
         columns: [
             { // Enumeración
                 data: null,
-                render: (data, type, row, meta) => meta.row + 1
+                render: function (data, type, row, meta) {
+                    return meta.row + 1 + meta.settings._iDisplayStart;
+                }
             },
             { data: 'serieChaleco' },
             { data: 'marcaYmodelo' },
@@ -107,55 +112,7 @@ $(document).ready(function () {
         language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
     });
 
-    // --- Búsqueda híbrida: local + base de datos ---
-    $('#tbdataChalecos_filter input')
-        .off() // eliminamos el evento original de búsqueda automática
-        .on('keyup', function (e) {
-            const valorBusqueda = this.value.trim();
-
-            // Si no hay texto, restauramos la tabla completa
-            if (valorBusqueda.length === 0) {
-                tablaChalecos.ajax.url('/api/v1/ApiChaleco/Lista').load();
-                return;
-            }
-
-            // Si presiona ENTER, buscar directamente en la base de datos
-            if (e.keyCode === 13) {
-                $.ajax({
-                    url: '/api/v1/ApiChaleco/BuscarPorNumeroSerie/' + encodeURIComponent(valorBusqueda),
-                    type: 'GET',
-                    dataType: 'json',
-                    beforeSend: showLoader,
-                    success: function (respuesta) {
-                        hideLoader();
-
-                        if (respuesta && respuesta.data) {
-                            // Limpiamos la tabla y mostramos solo el chaleco encontrado
-                            tablaChalecos.clear().rows.add([respuesta.data]).draw();
-                        } else {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'No encontrado',
-                                text: 'No se encontró ningún chaleco con ese número de serie.'
-                            });
-                        }
-                    },
-                    error: function () {
-                        hideLoader();
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'No se pudo realizar la búsqueda en la base de datos.'
-                        });
-                    }
-                });
-            } else {
-                // Mientras escribe (sin presionar Enter), búsqueda local
-                tablaChalecos.search(valorBusqueda).draw();
-            }
-        });
-
-
+    
     // Evento click del botón Nuevo Chaleco
     $("#btnNuevoChaleco").click(function () {
         mostrarModalChaleco(); // ← usa el modelo base
@@ -295,9 +252,6 @@ $(document).ready(function () {
         });
     });
 
-
-
-
     // ========================
     // Asignar chaleco (abrir modal)
     // ========================
@@ -429,8 +383,6 @@ $(document).ready(function () {
         });
     });
 
-
- 
     // Botón ELIMINAR para CHALECO
     $("#tbdataChalecos tbody").on("click", ".btn-eliminar", function () {
 
@@ -481,6 +433,60 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    let tablaChalecosEliminados;
+
+    $("#btnChalecosEliminados").on("click", function () {
+
+        // Inicializar tabla eliminados si no existe
+        if (!$.fn.DataTable.isDataTable('#tbChalecosEliminados')) {
+            tablaChalecosEliminados = $('#tbChalecosEliminados').DataTable({
+                responsive: true,
+                autoWidth: false,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: '/api/v1/ApiChaleco/ListarPaginadoEliminados', // 👈 tu endpoint del controller
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: function (d) {
+                        console.log("Request Eliminados:", d);
+                        return JSON.stringify(d);
+                    },
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: null, render: (data, type, row, meta) => meta.row + 1 + meta.settings._iDisplayStart },
+                    { data: 'serieChaleco' },
+                    { data: 'marcaYmodelo' },
+                    { data: 'talle' },
+                    { data: 'estadoChaleco', render: d => d ? d : '-' },
+                    { data: 'observaciones', render: d => d ? d : '-' },
+                    { data: 'fechaEliminacion', render: function (d) { return d ? new Date(d).toLocaleDateString('es-AR') : '-'; } }
+                ]
+,
+                order: [[0, "asc"]],
+                dom: "Bfrtip",
+                buttons: [
+                    {
+                        text: 'Exportar Excel',
+                        extend: 'excelHtml5',
+                        title: '',
+                        filename: 'Reporte_Chalecos_Eliminados',
+                        exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7] }
+                    },
+                    'pageLength'
+                ],
+                language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
+            });
+        } else {
+            // Solo recargar si ya existe
+            tablaChalecosEliminados.ajax.reload();
+        }
+
+        // Abrir modal
+        $('#modalChalecosEliminados').modal('show');
     });
 
 

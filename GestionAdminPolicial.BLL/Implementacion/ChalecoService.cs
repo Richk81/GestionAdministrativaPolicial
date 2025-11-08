@@ -2,6 +2,7 @@
 using GestionAdminPolicial.DAL.DBContext;
 using GestionAdminPolicial.DAL.Interfaces;
 using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,106 @@ namespace GestionAdminPolicial.BLL.Implementacion
             _repositorio = repositorio;
         }
 
-        //Lista los chalecos Activos con sus relaciones
+        // Lista los chalecos Activos con paginado, búsqueda y ordenamiento
+        public async Task<DataTableResponse<Chaleco>> ListarPaginado(DataTableRequest request)
+        {
+            IQueryable<Chaleco> query = await _repositorio.Consultar();
+
+            query = query
+                .Include(c => c.IdPersonalNavigation)
+                .Where(c => c.Eliminado == false);
+
+            // Total de registros activos
+            int totalRecords = await query.CountAsync();
+
+            // Filtro global (buscador)
+            if (!string.IsNullOrEmpty(request.Search?.Value))
+            {
+                string search = request.Search.Value.ToLower();
+                query = query.Where(c =>
+                        (c.SerieChaleco != null && c.SerieChaleco.ToLower().Contains(search)) ||
+                        (c.MarcaYmodelo != null && c.MarcaYmodelo.ToLower().Contains(search)) ||
+                        (c.IdPersonalNavigation != null && c.IdPersonalNavigation.Legajo != null &&
+                            c.IdPersonalNavigation.Legajo.ToLower().Contains(search)) ||
+                        (c.IdPersonalNavigation != null && c.IdPersonalNavigation.ApellidoYnombre != null &&
+                            c.IdPersonalNavigation.ApellidoYnombre.ToLower().Contains(search))
+            );
+            }
+
+            // Total después de aplicar búsqueda
+            int filteredRecords = await query.CountAsync();
+
+            // Ordenamiento y paginado
+            query = query
+                .OrderBy(c => c.SerieChaleco)
+                .Skip(request.Start)
+                .Take(request.Length);
+
+            var data = await query.ToListAsync();
+
+            Console.WriteLine($"Total: {totalRecords}, Filtrados: {filteredRecords}, Data: {data.Count}");
+
+            return new DataTableResponse<Chaleco>
+            {
+                Draw = request.Draw,
+                RecordsTotal = totalRecords,
+                RecordsFiltered = filteredRecords,
+                Data = data
+            };
+        }
+
+        // Lista los chalecos Eliminados con paginado, búsqueda y ordenamiento
+        public async Task<DataTableResponse<Chaleco>> ListarPaginadoEliminados(DataTableRequest request)
+        {
+            IQueryable<Chaleco> query = await _repositorio.Consultar();
+
+            // 🔹 Solo los chalecos eliminados
+            query = query
+                .Include(c => c.IdPersonalNavigation)
+                .Where(c => c.Eliminado == true);
+
+            // Total de registros eliminados
+            int totalRecords = await query.CountAsync();
+
+            // 🔍 Filtro global (buscador)
+            if (!string.IsNullOrEmpty(request.Search?.Value))
+            {
+                string search = request.Search.Value.ToLower();
+                query = query.Where(c =>
+                        (c.SerieChaleco != null && c.SerieChaleco.ToLower().Contains(search)) ||
+                        (c.MarcaYmodelo != null && c.MarcaYmodelo.ToLower().Contains(search)) ||
+                        (c.IdPersonalNavigation != null && c.IdPersonalNavigation.Legajo != null &&
+                            c.IdPersonalNavigation.Legajo.ToLower().Contains(search)) ||
+                        (c.IdPersonalNavigation != null && c.IdPersonalNavigation.ApellidoYnombre != null &&
+                            c.IdPersonalNavigation.ApellidoYnombre.ToLower().Contains(search))
+                );
+            }
+
+            // Total después de aplicar búsqueda
+            int filteredRecords = await query.CountAsync();
+
+            // 🔢 Ordenamiento (si querés más dinámico se puede agregar luego)
+            query = query
+                .OrderBy(c => c.SerieChaleco)
+                .Skip(request.Start)
+                .Take(request.Length);
+
+            // 🔄 Ejecución de la consulta
+            var data = await query.ToListAsync();
+
+            Console.WriteLine($"[Eliminados] Total: {totalRecords}, Filtrados: {filteredRecords}, Data: {data.Count}");
+
+            // 📦 Retornar la estructura esperada por DataTables
+            return new DataTableResponse<Chaleco>
+            {
+                Draw = request.Draw,
+                RecordsTotal = totalRecords,
+                RecordsFiltered = filteredRecords,
+                Data = data
+            };
+        }
+
+        //Lista los chalecos Activos con sus relaciones TOTAL sin paginar
         public async Task<List<Chaleco>> Lista()
         {
             IQueryable<Chaleco> query = await _repositorio.Consultar();
@@ -282,24 +382,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
             }
         }
 
-
         public Task<bool> Desasignar(int idChaleco)
         {
             return Asignar(idChaleco, null);
         }
-
-        public async Task<List<Chaleco>> BuscarPorNumeroSerie(string serieChaleco)
-        {
-            IQueryable<Chaleco> query = await _repositorio.Consultar();
-
-            query = query
-                .Where(c => c.SerieChaleco.Contains(serieChaleco) && c.Eliminado == false)
-                .Include(c => c.IdUsuarioNavigation)
-                .Include(c => c.IdPersonalNavigation);
-
-            return await query.ToListAsync();
-        }
-
 
     }
 }

@@ -7,6 +7,7 @@ using GestionAdminPolicial.AplicacionWeb.Utilidades.Response;
 using GestionAdminPolicial.BLL.Implementacion;
 using GestionAdminPolicial.BLL.Interfaces;
 using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,117 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         {
             _chalecoServicio = chalecoServicio;
             _mapper = mapper;
+        }
+
+        /// <summary>
+        /// Obtiene un listado paginado, filtrado y ordenado de chalecos.
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint está diseñado para integrarse con el componente <c>DataTables</c> en el cliente.
+        /// Permite realizar búsqueda global, ordenamiento y paginación de registros de manera eficiente
+        /// desde el servidor.
+        /// 
+        /// El cuerpo de la solicitud debe contener un objeto <see cref="DataTableRequest"/> con los parámetros
+        /// necesarios para el filtrado, orden y paginación.
+        /// 
+        /// La respuesta devuelve un objeto <see cref="DataTableResponse{T}"/> que incluye:
+        /// <list type="bullet">
+        ///   <item><description><c>draw</c>: Número de solicitud enviado por DataTables.</description></item>
+        ///   <item><description><c>recordsTotal</c>: Total de registros existentes sin filtrar.</description></item>
+        ///   <item><description><c>recordsFiltered</c>: Total de registros que cumplen el criterio de búsqueda.</description></item>
+        ///   <item><description><c>data</c>: Lista de registros paginados en formato JSON.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <param name="request">
+        /// Objeto con los parámetros de búsqueda, orden y paginación enviados por DataTables.
+        /// </param>
+        /// <returns>
+        /// Retorna un objeto JSON con la estructura esperada por DataTables, conteniendo los chalecos encontrados.
+        /// </returns>
+        /// <response code="200">Listado obtenido correctamente.</response>
+        /// <response code="400">Solicitud inválida (parámetros incorrectos o incompletos).</response>
+        /// <response code="500">Error interno del servidor al obtener los datos.</response>
+        /// <exception cref="Exception">
+        /// Puede lanzar una excepción si ocurre un error durante la consulta a la base de datos.
+        /// </exception>
+        [HttpPost("ListarPaginado")]
+        public async Task<IActionResult> ListarPaginado([FromBody] DataTableRequest request)
+        {
+            if (request == null)
+                return BadRequest("El request es nulo.");
+
+            var resultado = await _chalecoServicio.ListarPaginado(request);
+            var listaVM = _mapper.Map<List<VMChaleco>>(resultado.Data);
+
+            return Ok(new DataTableResponse<VMChaleco>
+            {
+                Draw = request.Draw,
+                RecordsTotal = resultado.RecordsTotal,
+                RecordsFiltered = resultado.RecordsFiltered,
+                Data = listaVM
+            });
+        }
+
+        /// <summary>
+        /// Obtiene un listado paginado, filtrado y ordenado de chalecos eliminados.
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint está diseñado para integrarse con el componente <c>DataTables</c> en el cliente.
+        /// Permite realizar búsqueda global, ordenamiento y paginación de registros de chalecos eliminados
+        /// desde el servidor.
+        ///
+        /// El cuerpo de la solicitud debe contener un objeto <see cref="DataTableRequest"/> con los parámetros
+        /// necesarios para el filtrado, orden y paginación.
+        ///
+        /// La respuesta devuelve un objeto <see cref="DataTableResponse{T}"/> que incluye:
+        /// <list type="bullet">
+        ///   <item><description><c>draw</c>: Número de solicitud enviado por DataTables.</description></item>
+        ///   <item><description><c>recordsTotal</c>: Total de registros existentes sin filtrar.</description></item>
+        ///   <item><description><c>recordsFiltered</c>: Total de registros que cumplen el criterio de búsqueda.</description></item>
+        ///   <item><description><c>data</c>: Lista de registros paginados en formato JSON.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <param name="request">
+        /// Objeto con los parámetros de búsqueda, orden y paginación enviados por DataTables.
+        /// </param>
+        /// <returns>
+        /// Retorna un objeto JSON con la estructura esperada por DataTables, conteniendo los chalecos eliminados encontrados.
+        /// </returns>
+        /// <response code="200">Listado obtenido correctamente.</response>
+        /// <response code="400">Solicitud inválida (parámetros incorrectos o incompletos).</response>
+        /// <response code="500">Error interno del servidor al obtener los datos.</response>
+        /// <exception cref="Exception">
+        /// Puede lanzar una excepción si ocurre un error durante la consulta a la base de datos.
+        /// </exception>
+        [HttpPost("ListarPaginadoEliminados")]
+        public async Task<IActionResult> ListarPaginadoEliminados([FromBody] DataTableRequest request)
+        {
+            if (request == null)
+                return BadRequest("El request es nulo.");
+
+            try
+            {
+                // Llamada al servicio que obtiene los chalecos eliminados
+                var resultado = await _chalecoServicio.ListarPaginadoEliminados(request);
+
+                // Mapear a ViewModel si usás AutoMapper
+                var listaVM = _mapper.Map<List<VMChaleco>>(resultado.Data);
+
+                // Retornar respuesta compatible con DataTables
+                return Ok(new DataTableResponse<VMChaleco>
+                {
+                    Draw = request.Draw,
+                    RecordsTotal = resultado.RecordsTotal,
+                    RecordsFiltered = resultado.RecordsFiltered,
+                    Data = listaVM
+                });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                // Podés loguear ex.Message aquí
+                return StatusCode(500, $"Error al obtener los chalecos eliminados: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -445,14 +557,6 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                 return BadRequest(new { estado = false, mensaje = ex.Message });
             }
         }
-
-        [HttpGet("BuscarPorNumeroSerie/{serieChaleco}")]
-        public async Task<IActionResult> BuscarPorNumeroSerie(string serieChaleco)
-        {
-            var lista = await _chalecoServicio.BuscarPorNumeroSerie(serieChaleco);
-            return Ok(lista);
-        }
-
 
 
     }

@@ -1,4 +1,5 @@
 ﻿using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +38,11 @@ namespace GestionAdminPolicial.BLL.Interfaces
 
         Task<bool> Desasignar(int idChaleco);
 
-        // Buscar chalecos por número de serie (desde la base de datos)
-        Task<List<Chaleco>> BuscarPorNumeroSerie(string serieChaleco);
+        //Paginacion en el listado de chalecos Activos
+        Task<DataTableResponse<Chaleco>> ListarPaginado(DataTableRequest request);
+
+        // Paginación en el listado de chalecos Eliminados
+        Task<DataTableResponse<Chaleco>> ListarPaginadoEliminados(DataTableRequest request);
 
     }
 }
