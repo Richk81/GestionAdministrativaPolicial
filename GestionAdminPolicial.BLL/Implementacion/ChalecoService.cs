@@ -92,13 +92,16 @@ namespace GestionAdminPolicial.BLL.Implementacion
             if (!string.IsNullOrEmpty(request.Search?.Value))
             {
                 string search = request.Search.Value.ToLower();
+
                 query = query.Where(c =>
-                        (c.SerieChaleco != null && c.SerieChaleco.ToLower().Contains(search)) ||
-                        (c.MarcaYmodelo != null && c.MarcaYmodelo.ToLower().Contains(search)) ||
-                        (c.IdPersonalNavigation != null && c.IdPersonalNavigation.Legajo != null &&
-                            c.IdPersonalNavigation.Legajo.ToLower().Contains(search)) ||
-                        (c.IdPersonalNavigation != null && c.IdPersonalNavigation.ApellidoYnombre != null &&
-                            c.IdPersonalNavigation.ApellidoYnombre.ToLower().Contains(search))
+                    (c.SerieChaleco != null && c.SerieChaleco.ToLower().Contains(search)) ||
+                    (c.MarcaYmodelo != null && c.MarcaYmodelo.ToLower().Contains(search)) ||
+                    (c.IdPersonalNavigation != null &&
+                        !string.IsNullOrEmpty(c.IdPersonalNavigation.Legajo) &&
+                        c.IdPersonalNavigation.Legajo.ToLower().Contains(search)) ||
+                    (c.IdPersonalNavigation != null &&
+                        !string.IsNullOrEmpty(c.IdPersonalNavigation.ApellidoYnombre) &&
+                        c.IdPersonalNavigation.ApellidoYnombre.ToLower().Contains(search))
                 );
             }
 
@@ -107,7 +110,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
 
             // 🔢 Ordenamiento (si querés más dinámico se puede agregar luego)
             query = query
-                .OrderBy(c => c.SerieChaleco)
+                .OrderByDescending(c => c.FechaEliminacion)
                 .Skip(request.Start)
                 .Take(request.Length);
 

@@ -469,7 +469,7 @@ $(document).ready(function () {
                 serverSide: true,
                 processing: true,
                 ajax: {
-                    url: '/api/v1/ApiChaleco/ListarPaginadoEliminados', // 👈 tu endpoint del controller
+                    url: '/api/v1/ApiChaleco/ListarPaginadoEliminados', // tu endpoint del controller
                     type: 'POST',
                     contentType: 'application/json',
                     data: function (d) {
@@ -499,7 +499,12 @@ $(document).ready(function () {
                     { data: 'talle' },
                     { data: 'estadoChaleco', render: d => d ? d : '-' },
                     { data: 'observaciones', render: d => d ? d : '-' },
-                    { data: 'fechaEliminacion', render: function (d) { return d ? new Date(d).toLocaleDateString('es-AR') : '-'; } }
+                    {
+                        data: 'fechaEliminacion',
+                        render: d => d
+                            ? new Date(d).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
+                            : '-'
+                    }
                 ]
 ,
                 order: [[0, "asc"]],
