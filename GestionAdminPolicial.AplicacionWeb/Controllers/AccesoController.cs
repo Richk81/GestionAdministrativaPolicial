@@ -65,18 +65,25 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                 return View(modelo);
             }
 
+            // Si el usuario No está activo MUESTRA EL MENSAJE:
+            if (usuario_encontrado.EsActivo != true)
+            {
+                ViewData["Mensaje"] = "Usuario No Activo. Póngase en contacto con el Administrador.";
+                return View(modelo);
+            }
+
             ViewData["Mensaje"] = null;
 
             // Crear las claims de manera segura, evitando nulls
             List<Claim> claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, usuario_encontrado.Nombre ?? string.Empty),
-        new Claim(ClaimTypes.NameIdentifier, usuario_encontrado.IdUsuario.ToString()),
-        new Claim(ClaimTypes.Role, usuario_encontrado.IdRol.ToString()),
-        new Claim("UrlFoto", usuario_encontrado.UrlFoto ?? string.Empty),
-        new Claim("Telefono", usuario_encontrado.Telefono ?? string.Empty),
-        new Claim("Correo", usuario_encontrado.Correo ?? string.Empty)
-    };
+            {
+                new Claim(ClaimTypes.Name, usuario_encontrado.Nombre ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, usuario_encontrado.IdUsuario.ToString()),
+                new Claim(ClaimTypes.Role, usuario_encontrado.IdRol.ToString()),
+                new Claim("UrlFoto", usuario_encontrado.UrlFoto ?? string.Empty),
+                new Claim("Telefono", usuario_encontrado.Telefono ?? string.Empty),
+                new Claim("Correo", usuario_encontrado.Correo ?? string.Empty)
+            };
 
             // Crear el objeto ClaimsIdentity
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

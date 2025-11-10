@@ -1,18 +1,16 @@
-﻿using System;
+﻿using GestionAdminPolicial.BLL.Interfaces;
+using GestionAdminPolicial.DAL.Interfaces;
+using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
-using System.Net.Http;
-using System.Net;
-using System.IO;
-
-
-using Microsoft.EntityFrameworkCore;
-using GestionAdminPolicial.BLL.Interfaces;
-using GestionAdminPolicial.Entity;
-using GestionAdminPolicial.DAL.Interfaces;
 
 namespace GestionAdminPolicial.BLL.Implementacion
 {
@@ -29,6 +27,130 @@ namespace GestionAdminPolicial.BLL.Implementacion
             )
         {
             _repositorio = repositorio;
+        }
+
+        // Lista el Personal Policial Activo con paginación, búsqueda y ordenamiento
+        public async Task<DataTableResponse<PersonalPolicial>> ListarPaginado(DataTableRequest request)
+        {
+            IQueryable<PersonalPolicial> query = await _repositorio.Consultar();
+
+            query = query
+                .Include(p => p.Armas)
+                .Include(p => p.Domicilios)
+                .Include(p => p.IdUsuarioNavigation)
+                .AsSplitQuery()
+                .Where(p => p.Trasladado == false);
+
+            // Total de registros activos
+            int totalRecords = await query.CountAsync();
+
+            // Filtro global (buscador)
+            if (!string.IsNullOrEmpty(request.Search?.Value))
+            {
+                string search = request.Search.Value.ToLower();
+                query = query.Where(p =>
+                        (p.ApellidoYnombre != null && p.ApellidoYnombre.ToLower().Contains(search)) ||
+                        (p.Dni != null && p.Dni.ToLower().Contains(search)) ||
+                        (p.Legajo != null && p.Legajo.ToLower().Contains(search)) ||
+                        (p.Especialidad != null && p.Especialidad.ToLower().Contains(search)) ||
+                        (p.Telefono != null && p.Telefono.ToLower().Contains(search))
+                );
+            }
+
+            // Total después de aplicar búsqueda
+            int filteredRecords = await query.CountAsync();
+
+            // Ordenamiento y paginado x Legajo Ascendente
+            query = query
+                .OrderBy(p => p.Legajo)
+                .Skip(request.Start)
+                .Take(request.Length);
+
+            var data = await query.ToListAsync();
+
+            Console.WriteLine($"Total: {totalRecords}, Filtrados: {filteredRecords}, Data: {data.Count}");
+
+            return new DataTableResponse<PersonalPolicial>
+            {
+                Draw = request.Draw,
+                RecordsTotal = totalRecords,
+                RecordsFiltered = filteredRecords,
+                Data = data
+            };
+        }
+
+        // Lista el Personal Policial Trasladado con paginación, búsqueda y ordenamiento
+        public async Task<DataTableResponse<PersonalPolicial>> ListarPaginadoTrasladados(DataTableRequest request)
+        {
+            IQueryable<PersonalPolicial> query = await _repositorio.Consultar();
+
+            // Incluye relaciones y filtra solo los trasladados
+            query = query
+                .Include(p => p.Armas)
+                .Include(p => p.Domicilios)
+                .Include(p => p.IdUsuarioNavigation)
+                .AsSplitQuery()
+                .Where(p => p.Trasladado == true);
+
+            // Total de registros trasladados
+            int totalRecords = await query.CountAsync();
+
+            // Filtro global (buscador) — adaptado para búsqueda por mes (texto) y año
+            if (!string.IsNullOrEmpty(request.Search?.Value))
+            {
+                string search = request.Search.Value.Trim().ToLower();
+
+                // Diccionario de meses en español
+                var meses = new Dictionary<string, int>
+                {
+                    { "enero", 1 }, { "febrero", 2 }, { "marzo", 3 }, { "abril", 4 },
+                    { "mayo", 5 }, { "junio", 6 }, { "julio", 7 }, { "agosto", 8 },
+                    { "septiembre", 9 }, { "setiembre", 9 }, // soporta ambas variantes
+                    { "octubre", 10 }, { "noviembre", 11 }, { "diciembre", 12 }
+                };
+
+                // Detectar si la búsqueda es un mes o un año
+                int? mesBuscado = meses.ContainsKey(search) ? meses[search] : (int?)null;
+                int? anioBuscado = int.TryParse(search, out int anioTemp) ? anioTemp : (int?)null;
+
+                query = query.Where(p =>
+                    (p.ApellidoYnombre != null && p.ApellidoYnombre.ToLower().Contains(search)) ||
+                    (p.Dni != null && p.Dni.ToLower().Contains(search)) ||
+                    (p.Legajo != null && p.Legajo.ToLower().Contains(search)) ||
+                    (p.Telefono != null && p.Telefono.ToLower().Contains(search)) ||
+
+                    // Comparación por mes en texto
+                    (mesBuscado.HasValue && p.FechaEliminacion.HasValue &&
+                        p.FechaEliminacion.Value.Month == mesBuscado.Value) ||
+
+                    // Comparación por año
+                    (anioBuscado.HasValue && p.FechaEliminacion.HasValue &&
+                        p.FechaEliminacion.Value.Year == anioBuscado.Value)
+                );
+            }
+
+            // Total después del filtrado
+            int filteredRecords = await query.CountAsync();
+
+            // Ordenamiento y paginación (por FechaEliminacion descendente)
+            query = query
+                .OrderByDescending(p => p.FechaEliminacion)  // más reciente primero
+                .ThenBy(p => p.Legajo)                       // opcional: orden secundario
+                .Skip(request.Start)
+                .Take(request.Length);
+
+            var data = await query.ToListAsync();
+
+            Console.WriteLine($"Trasladados -> Total: {totalRecords}, Filtrados: {filteredRecords}, Data: {data.Count}");
+
+            // Retorna en formato compatible con DataTables
+            return new DataTableResponse<PersonalPolicial>
+            {
+                Draw = request.Draw,
+                RecordsTotal = totalRecords,
+                RecordsFiltered = filteredRecords,
+                Data = data
+            };
         }
 
         //Lógica del método listar PersonalPolicial Activo

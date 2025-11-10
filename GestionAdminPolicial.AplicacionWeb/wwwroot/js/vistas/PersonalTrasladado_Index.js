@@ -28,7 +28,7 @@
     armas: [{ marca: "No Provista", numeroSerie: "No Provista" }]
 };
 
-//Función para formatear la fecha
+//Función para formatear la fecha de Traslado
 function formatearFecha(fechaISO) {
     if (!fechaISO) return "-";
 
@@ -53,26 +53,34 @@ $(document).ready(function () {
     tablaData = $('#tbdataPersonalTrasladado').DataTable({
         responsive: true,
         autoWidth: false,
+        serverSide: true,
+        processing: true,
         ajax: {
-            url: '/api/v1/ApiPersonal/ListaTrasladados',
-            type: 'GET',
-            dataType: 'json',
-            dataSrc: 'data', // <- aquí indicamos que DataTables use json.data
-            error: function (xhr, status, error) {
-                console.error("Error AJAX:", status, error);
+            url: '/api/v1/ApiPersonal/ListarPaginadoTrasladados',
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                console.log("Request enviado:", d); // Verificá que se envíe correctamente
+                return JSON.stringify(d);
             },
+            dataSrc: 'data', //IMPORTANTE: indica de dónde sacar los registros
+
             beforeSend: function () {
-                $(".card-body").LoadingOverlay("show"); // muestra overlay antes de la petición
+                $(".card-body").LoadingOverlay("show");
             },
             complete: function () {
-                $(".card-body").LoadingOverlay("hide"); // oculta overlay cuando termina la petición
+                $(".card-body").LoadingOverlay("hide");
+            },
+            error: function (xhr, status, error) {
+                $(".card-body").LoadingOverlay("hide");
+                console.error("Error al cargar datos:", error);
             }
         },
         columns: [
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    return meta.row + 1; // numeración automática
+                    return meta.row + 1 + meta.settings._iDisplayStart; // empieza en 1 y sigue en la paginación al correr la tabla
                 }
             },
             { data: "legajo" },
@@ -109,7 +117,6 @@ $(document).ready(function () {
                 }
             }
         ],
-        order: [[4, "desc"]],
         dom: "Bfrtip",
         buttons: [
             {
@@ -125,16 +132,7 @@ $(document).ready(function () {
             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
         }
     });
-
-    // Actualizar enumeración cada vez que se ordena o filtra
-    tablaData.on('order.dt search.dt', function () {
-        tablaData.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-            cell.innerHTML = i + 1;
-        });
-    }).draw();
-
 });
-
 
 //Boton para ver detalles del personal
 $("#tbdataPersonalTrasladado tbody").on("click", ".btn-ver", function () {

@@ -32,6 +32,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
 
             query = query
                 .Include(c => c.IdPersonalNavigation)
+                .AsSplitQuery()
                 .Where(c => c.Eliminado == false);
 
             // Total de registros activos
@@ -81,6 +82,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
             // 🔹 Solo los chalecos eliminados
             query = query
                 .Include(c => c.IdPersonalNavigation)
+                .AsSplitQuery()
                 .Where(c => c.Eliminado == true);
 
             // Total de registros eliminados

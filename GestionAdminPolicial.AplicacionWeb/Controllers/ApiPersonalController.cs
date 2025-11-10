@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
 //Agrego las referencias que voy a utilizar --- RICHARD
 using AutoMapper;
 using GestionAdminPolicial.AplicacionWeb.Models.ViewModels;
 using GestionAdminPolicial.AplicacionWeb.Utilidades.Response;
 using GestionAdminPolicial.BLL.Interfaces;
 using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
-
-using Asp.Versioning;
 
 
 namespace GestionAdminPolicial.AplicacionWeb.Controllers
@@ -35,6 +35,120 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
         {
             _personalServicio = personalServicio;
             _mapper = mapper;
+        }
+
+        /// <summary>
+        /// Obtiene un listado paginado, filtrado y ordenado del Personal Policial activo.
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint está diseñado para integrarse con el componente <c>DataTables</c> en el cliente.
+        /// Permite realizar búsqueda global, ordenamiento y paginación de registros de manera eficiente
+        /// desde el servidor.
+        ///
+        /// El cuerpo de la solicitud debe contener un objeto <see cref="DataTableRequest"/> con los parámetros
+        /// necesarios para el filtrado, orden y paginación.
+        ///
+        /// La respuesta devuelve un objeto <see cref="DataTableResponse{T}"/> que incluye:
+        /// <list type="bullet">
+        ///   <item><description><c>draw</c>: Número de solicitud enviado por DataTables.</description></item>
+        ///   <item><description><c>recordsTotal</c>: Total de registros existentes sin filtrar.</description></item>
+        ///   <item><description><c>recordsFiltered</c>: Total de registros que cumplen el criterio de búsqueda.</description></item>
+        ///   <item><description><c>data</c>: Lista de registros paginados en formato JSON.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <param name="request">
+        /// Objeto con los parámetros de búsqueda, orden y paginación enviados por DataTables.
+        /// </param>
+        /// <returns>
+        /// Retorna un objeto JSON con la estructura esperada por DataTables, conteniendo el personal policial encontrado.
+        /// </returns>
+        /// <response code="200">Listado obtenido correctamente.</response>
+        /// <response code="400">Solicitud inválida (parámetros incorrectos o incompletos).</response>
+        /// <response code="500">Error interno del servidor al obtener los datos.</response>
+        /// <exception cref="Exception">
+        /// Puede lanzar una excepción si ocurre un error durante la consulta a la base de datos.
+        /// </exception>
+        [HttpPost("ListarPaginado")]
+        public async Task<IActionResult> ListarPaginado([FromBody] DataTableRequest request)
+        {
+            if (request == null)
+                return BadRequest("El request es nulo.");
+
+            try
+            {
+                var resultado = await _personalServicio.ListarPaginado(request);
+                var listaVM = _mapper.Map<List<VMPersonalPolicial>>(resultado.Data);
+
+                return Ok(new DataTableResponse<VMPersonalPolicial>
+                {
+                    Draw = request.Draw,
+                    RecordsTotal = resultado.RecordsTotal,
+                    RecordsFiltered = resultado.RecordsFiltered,
+                    Data = listaVM
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al listar personal policial paginado: {ex.Message}");
+                return StatusCode(500, "Error interno del servidor al obtener el listado.");
+            }
+        }
+
+        /// <summary>
+        /// Obtiene un listado paginado, filtrado y ordenado del Personal Policial trasladado.
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint está diseñado para integrarse con el componente <c>DataTables</c> en el cliente.
+        /// Permite realizar búsqueda global, ordenamiento y paginación de registros de manera eficiente
+        /// desde el servidor.
+        ///
+        /// El cuerpo de la solicitud debe contener un objeto <see cref="DataTableRequest"/> con los parámetros
+        /// necesarios para el filtrado, orden y paginación.
+        ///
+        /// La respuesta devuelve un objeto <see cref="DataTableResponse{T}"/> que incluye:
+        /// <list type="bullet">
+        ///   <item><description><c>draw</c>: Número de solicitud enviado por DataTables.</description></item>
+        ///   <item><description><c>recordsTotal</c>: Total de registros trasladados sin filtrar.</description></item>
+        ///   <item><description><c>recordsFiltered</c>: Total de registros trasladados que cumplen el criterio de búsqueda.</description></item>
+        ///   <item><description><c>data</c>: Lista de registros paginados en formato JSON.</description></item>
+        /// </list>
+        /// </remarks>
+        /// <param name="request">
+        /// Objeto con los parámetros de búsqueda, orden y paginación enviados por DataTables.
+        /// </param>
+        /// <returns>
+        /// Retorna un objeto JSON con la estructura esperada por DataTables, conteniendo el personal policial trasladado encontrado.
+        /// </returns>
+        /// <response code="200">Listado de personal trasladado obtenido correctamente.</response>
+        /// <response code="400">Solicitud inválida (parámetros incorrectos o incompletos).</response>
+        /// <response code="500">Error interno del servidor al obtener los datos de personal trasladado.</response>
+        /// <exception cref="Exception">
+        /// Puede lanzar una excepción si ocurre un error durante la consulta a la base de datos.
+        /// </exception>
+        [HttpPost("ListarPaginadoTrasladados")]
+        public async Task<IActionResult> ListarPaginadoTrasladados([FromBody] DataTableRequest request)
+        {
+            if (request == null)
+                return BadRequest("El request es nulo.");
+
+            try
+            {
+                var resultado = await _personalServicio.ListarPaginadoTrasladados(request);
+                var listaVM = _mapper.Map<List<VMPersonalPolicial>>(resultado.Data);
+
+                return Ok(new DataTableResponse<VMPersonalPolicial>
+                {
+                    Draw = request.Draw,
+                    RecordsTotal = resultado.RecordsTotal,
+                    RecordsFiltered = resultado.RecordsFiltered,
+                    Data = listaVM
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al listar personal policial trasladado: {ex.Message}");
+                return StatusCode(500, "Error interno del servidor al obtener el listado de personal trasladado.");
+            }
         }
 
         /// <summary>

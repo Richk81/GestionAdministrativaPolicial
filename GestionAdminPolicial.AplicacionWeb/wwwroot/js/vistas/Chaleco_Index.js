@@ -15,27 +15,35 @@ let tablaPersonalModal;
 let chalecoSeleccionado;
 
 $(document).ready(function () {
-    // ========================
-    // Loader
-    // ========================
-    function showLoader() { $("#overlayLoader").show(); }
-    function hideLoader() { $("#overlayLoader").hide(); }
-
     // Tabla principal de chalecos con paginación del lado del servidor
     tablaChalecos = $('#tbdataChalecos').DataTable({
         responsive: true,
         autoWidth: false,
-        serverSide: true, // 👈 Esto es clave
-        processing: true, // 👈 Muestra el loader de DataTables
+        serverSide: true, // Esto activa el modo de paginación y búsqueda en el servidor
+        processing: true, 
         ajax: {
             url: '/api/v1/ApiChaleco/ListarPaginado',
             type: 'POST',
             contentType: 'application/json',
             data: function (d) {
-                console.log("Request enviado:", d); // 👈 Verificá que se envíe correctamente
+                console.log("Request enviado:", d); // Verificá que se envíe correctamente
                 return JSON.stringify(d);
             },
-             dataSrc: 'data' // 👈 MUY IMPORTANTE: indica de dónde sacar los registros
+            dataSrc: 'data', // indica de dónde sacar los registros
+            beforeSend: function () {
+                $(".card-body").LoadingOverlay("show");
+            },
+
+            // Se ejecuta después de recibir la respuesta (éxito o error)
+            complete: function () {
+                $(".card-body").LoadingOverlay("hide");
+            },
+
+            // Manejo de error para asegurarse de que el overlay se oculta incluso si falla
+            error: function (xhr, status, error) {
+                $(".card-body").LoadingOverlay("hide");
+                console.error("Error al cargar los datos:", error);
+            }
         },
         columns: [
             { // Enumeración
@@ -263,17 +271,31 @@ $(document).ready(function () {
             tablaPersonalModal = $('#tbPersonalModal').DataTable({
                 responsive: true,
                 autoWidth: false,
-                pageLength: 10,
+                processing: true, // muestra el spinner
+                serverSide: true, // activa el modo servidor
                 ajax: {
-                    url: '/api/v1/ApiPersonal/Lista',
-                    type: 'GET',
-                    datatype: 'json',
+                    url: '/api/v1/ApiPersonal/ListarPaginado',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: function (d) {
+                        // opcional: logs para depuración
+                        console.log("Request enviado:", d);
+                        return JSON.stringify(d);
+                    },
                     dataSrc: 'data',
-                    beforeSend: showLoader,
-                    complete: hideLoader
+                    beforeSend: function () {
+                        $("#modalAsignar .modal-body").LoadingOverlay("show");
+                    },
+                    complete: function () {
+                        $("#modalAsignar .modal-body").LoadingOverlay("hide");
+                    },
+                    error: function (xhr, status, error) {
+                        $("#modalAsignar .modal-body").LoadingOverlay("hide");
+                        console.error("Error al cargar datos:", error);
+                    }
                 },
                 columns: [
-                    { data: null, render: (data, type, row, meta) => meta.row + 1 },
+                    { data: null, render: (data, type, row, meta) => meta.row + 1 + meta.settings._iDisplayStart},
                     { data: 'legajo' },
                     { data: 'apellidoYNombre' },
                     { data: 'grado' },
@@ -454,7 +476,21 @@ $(document).ready(function () {
                         console.log("Request Eliminados:", d);
                         return JSON.stringify(d);
                     },
-                    dataSrc: 'data'
+                    dataSrc: 'data',
+                    beforeSend: function () {
+                        $(".card-body").LoadingOverlay("show");
+                    },
+
+                    // 👇 Se ejecuta después de recibir la respuesta (éxito o error)
+                    complete: function () {
+                        $(".card-body").LoadingOverlay("hide");
+                    },
+
+                    // 👇 Manejo de error para asegurarse de que el overlay se oculta incluso si falla
+                    error: function (xhr, status, error) {
+                        $(".card-body").LoadingOverlay("hide");
+                        console.error("Error al cargar los datos:", error);
+                    }
                 },
                 columns: [
                     { data: null, render: (data, type, row, meta) => meta.row + 1 + meta.settings._iDisplayStart },

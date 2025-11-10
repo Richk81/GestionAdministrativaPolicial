@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
 //Agrego las referencias que voy a utilizar --- RICHARD
 using AutoMapper;
+using GestionAdminPolicial.AplicacionWeb.Models; // <-- Importar ResponseLista
 using GestionAdminPolicial.AplicacionWeb.Models.ViewModels;
 using GestionAdminPolicial.AplicacionWeb.Utilidades.Response;
 using GestionAdminPolicial.BLL.Interfaces;
 using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
-
-using Asp.Versioning;
-
-using GestionAdminPolicial.AplicacionWeb.Models; // <-- Importar ResponseLista
 
 namespace GestionAdminPolicial.AplicacionWeb.Controllers
 {
@@ -66,6 +65,66 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = "Error interno al obtener roles", detalle = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Obtiene un listado paginado, filtrado y ordenado de usuarios del sistema.
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint está diseñado para integrarse con el componente <c>DataTables</c> en el cliente.
+        /// Permite realizar búsqueda global, ordenamiento y paginación de registros de manera eficiente
+        /// desde el servidor.
+        ///
+        /// El cuerpo de la solicitud debe contener un objeto <see cref="DataTableRequest"/> con los parámetros
+        /// necesarios para el filtrado, orden y paginación.
+        ///
+        /// La respuesta devuelve un objeto <see cref="DataTableResponse{T}"/> que incluye:
+        /// <list type="bullet">
+        ///   <item><description><c>draw</c>: Número de solicitud enviado por DataTables.</description></item>
+        ///   <item><description><c>recordsTotal</c>: Total de registros existentes sin filtrar.</description></item>
+        ///   <item><description><c>recordsFiltered</c>: Total de registros que cumplen el criterio de búsqueda.</description></item>
+        ///   <item><description><c>data</c>: Lista de registros paginados en formato JSON.</description></item>
+        /// </list>
+        /// 
+        /// Los campos disponibles para búsqueda global son:
+        /// <list type="bullet">
+        ///   <item><description>Nombre del usuario</description></item>
+        ///   <item><description>Correo electrónico</description></item>
+        ///   <item><description>Teléfono</description></item>
+        ///   <item><description>Rol asignado</description></item>
+        /// </list>
+        /// </remarks>
+        /// <param name="request">
+        /// Objeto con los parámetros de búsqueda, orden y paginación enviados por DataTables.
+        /// </param>
+        /// <returns>
+        /// Retorna un objeto JSON con la estructura esperada por DataTables, conteniendo los usuarios encontrados.
+        /// </returns>
+        /// <response code="200">Listado obtenido correctamente.</response>
+        /// <response code="400">Solicitud inválida (parámetros incorrectos o incompletos).</response>
+        /// <response code="500">Error interno del servidor al obtener los datos.</response>
+        /// <exception cref="Exception">
+        /// Puede lanzar una excepción si ocurre un error durante la consulta a la base de datos.
+        /// </exception>
+        [HttpPost("ListarPaginado")]
+        public async Task<IActionResult> ListarPaginado([FromBody] DataTableRequest request)
+        {
+            Console.WriteLine("👉 Entrando a ListarPaginado");
+
+            if (request == null)
+                return BadRequest("El request es nulo.");
+
+            var resultado = await _usuarioServicio.ListarPaginado(request);
+            var listaVM = _mapper.Map<List<VMUsuario>>(resultado.Data);
+
+            return Ok(new DataTableResponse<VMUsuario>
+            {
+                Draw = request.Draw,
+                RecordsTotal = resultado.RecordsTotal,
+                RecordsFiltered = resultado.RecordsFiltered,
+                Data = listaVM
+            });
+        }
+
 
         /// <summary>
         /// Obtiene el listado completo de usuarios administrativos.

@@ -49,22 +49,34 @@ $(document).ready(function () {
     tablaData = $('#tbdataPersonal').DataTable({
         responsive: true,
         autoWidth: false,  // importante
+        serverSide: true, // Esto es clave
+        processing: true, // Muestra el loader de DataTables
         ajax: {
-            url: '/api/v1/ApiPersonal/Lista',
-            type: 'GET',
-            datatype: 'json',
+            url: '/api/v1/ApiPersonal/ListarPaginado',
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                console.log("Request enviado:", d); // Verificá que se envíe correctamente
+                return JSON.stringify(d);
+            },
+            dataSrc: 'data', //IMPORTANTE: indica de dónde sacar los registros
+
             beforeSend: function () {
-                $(".card-body").LoadingOverlay("show"); // muestra overlay antes de la petición
+                $(".card-body").LoadingOverlay("show");
             },
             complete: function () {
-                $(".card-body").LoadingOverlay("hide"); // oculta overlay cuando termina la petición
+                $(".card-body").LoadingOverlay("hide");
+            },
+            error: function (xhr, status, error) {
+                $(".card-body").LoadingOverlay("hide");
+                console.error("Error al cargar datos:", error);
             }
         },
         columns: [          
             { // Columna de enumeración
                 data: null,
                 render: function (data, type, row, meta) {
-                    return meta.row + 1; // empieza en 1
+                    return meta.row + 1 + meta.settings._iDisplayStart; // empieza en 1
                 },
                 orderable: false,
                 searchable: false
@@ -97,7 +109,6 @@ $(document).ready(function () {
                 }
             }
         ],
-        order: [[1, "asc"]],
         dom: "Bfrtip",
         buttons: [
             {
@@ -113,13 +124,6 @@ $(document).ready(function () {
             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
         }
     });
-
-    // Actualizar enumeración cada vez que se ordena o filtra
-    tablaData.on('order.dt search.dt', function () {
-        tablaData.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-            cell.innerHTML = i + 1;
-        });
-    }).draw();
 });
 
 

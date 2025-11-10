@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 
 namespace GestionAdminPolicial.BLL.Interfaces
 {
@@ -30,6 +31,12 @@ namespace GestionAdminPolicial.BLL.Interfaces
 
         // Marcar personal como no trasladado (restituir)
         Task<bool> Restituir(int idPersonal, int idUsuario);
+
+        //Paginacion en el listado de Perssonal Policial Activos
+        Task<DataTableResponse<PersonalPolicial>> ListarPaginado(DataTableRequest request);
+        
+        //Paginacion en el listado de Personal Policial Trasladados
+        Task<DataTableResponse<PersonalPolicial>> ListarPaginadoTrasladados(DataTableRequest request);
 
     }
 }

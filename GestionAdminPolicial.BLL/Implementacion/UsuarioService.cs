@@ -1,18 +1,16 @@
-﻿using System;
+﻿using GestionAdminPolicial.BLL.Interfaces;
+using GestionAdminPolicial.DAL.Interfaces;
+using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
-using System.Net.Http;
-using System.Net;
-using System.IO;
-
-
-using Microsoft.EntityFrameworkCore;
-using GestionAdminPolicial.BLL.Interfaces;
-using GestionAdminPolicial.Entity;
-using GestionAdminPolicial.DAL.Interfaces;
 
 namespace GestionAdminPolicial.BLL.Implementacion
 {
@@ -35,7 +33,57 @@ namespace GestionAdminPolicial.BLL.Implementacion
             _correoService = correoService;
         }
 
-        // Implementación de la lógica de los métodos de la interfaz IUsuarioService:
+        // Lista los usuarios con paginado, búsqueda y ordenamiento
+        public async Task<DataTableResponse<Usuario>> ListarPaginado(DataTableRequest request)
+        {
+            IQueryable<Usuario> query = await _repositorio.Consultar();
+
+            // Incluimos la relación con el Rol
+            query = query
+                .Include(u => u.IdRolNavigation)
+                .AsSplitQuery();
+
+            // Total de registros sin filtrar
+            int totalRecords = await query.CountAsync();
+
+            // Filtro global (buscador)
+            if (!string.IsNullOrEmpty(request.Search?.Value))
+            {
+                string search = request.Search.Value.ToLower();
+
+                query = query.Where(u =>
+                    (u.Nombre != null && u.Nombre.ToLower().Contains(search)) ||
+                    (u.Correo != null && u.Correo.ToLower().Contains(search)) ||
+                    (u.Telefono != null && u.Telefono.ToLower().Contains(search)) ||
+                    (u.IdRolNavigation != null && u.IdRolNavigation.Descripcion != null &&
+                        u.IdRolNavigation.Descripcion.ToLower().Contains(search))
+                );
+            }
+
+            // Total después del filtrado
+            int filteredRecords = await query.CountAsync();
+
+            // Ordenamiento y paginación
+            query = query
+                .OrderBy(u => u.Nombre) // orden por defecto
+                .Skip(request.Start)
+                .Take(request.Length);
+
+            // Ejecutar la consulta y traer los datos
+            var data = await query.ToListAsync();
+
+            // Log de control (opcional)
+            Console.WriteLine($"Total: {totalRecords}, Filtrados: {filteredRecords}, Data: {data.Count}");
+
+            // Retornar la respuesta estructurada para DataTables
+            return new DataTableResponse<Usuario>
+            {
+                Draw = request.Draw,
+                RecordsTotal = totalRecords,
+                RecordsFiltered = filteredRecords,
+                Data = data
+            };
+        }
 
         //Lógica del método listar usuarios
         public async Task<List<Usuario>> Lista() 
@@ -188,8 +236,9 @@ namespace GestionAdminPolicial.BLL.Implementacion
         {
             string clave_encriptada = _utilidadesService.ConvertirSha256(clave);
 
-            Usuario usuario_encontrado = await _repositorio.Obtener(u => u.Correo.Equals(correo) 
-            && u.Clave.Equals(clave_encriptada));
+            Usuario usuario_encontrado = await _repositorio.Obtener(u =>
+            u.Correo.Equals(correo) &&
+            u.Clave.Equals(clave_encriptada));
 
             return usuario_encontrado;
         }

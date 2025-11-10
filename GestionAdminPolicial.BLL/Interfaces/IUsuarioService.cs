@@ -1,4 +1,5 @@
 ﻿using GestionAdminPolicial.Entity;
+using GestionAdminPolicial.Entity.DataTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,7 @@ namespace GestionAdminPolicial.BLL.Interfaces
         Task<bool> GuardarPerfil(Usuario entidad);
         Task<bool> CambiarClave(int IdUsuario, string claveActual, string claveNueva);
         Task<bool> RestablecerClave(string correo, string UrlPlantillaCorreo);
+        //Paginacion en el listado de USUARIOS
+        Task<DataTableResponse<Usuario>> ListarPaginado(DataTableRequest request);
     }
 }
