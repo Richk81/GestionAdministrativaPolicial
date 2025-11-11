@@ -373,7 +373,7 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                 int idUsuarioInt = 0;
                 ClaimsPrincipal claimUser = HttpContext.User;
 
-                // 🔹 Verificar si el usuario está autenticado y obtener su ID
+                // Verificar si el usuario está autenticado y obtener su ID
                 if (claimUser.Identity?.IsAuthenticated == true)
                 {
                     string? idUsuario = claimUser.Claims
@@ -385,10 +385,10 @@ namespace GestionAdminPolicial.AplicacionWeb.Controllers
                         idUsuarioInt = int.Parse(idUsuario);
                 }
 
-                // 🔹 Llamada al servicio de chaleco (registro de eliminación lógica)
+                // Llamada al servicio de chaleco (registro de eliminación lógica)
                 bool resultado = await _chalecoServicio.Eliminar(idChaleco, idUsuarioInt);
 
-                // 🔹 Construcción de respuesta
+                // Construcción de respuesta
                 genericResponse.Estado = resultado;
                 genericResponse.Mensaje = resultado
                     ? "El chaleco fue eliminado correctamente."

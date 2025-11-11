@@ -16,13 +16,16 @@ namespace GestionAdminPolicial.BLL.Implementacion
     {
         //(SERVICIOS QUE VOY A UTILIZAR)   
         private readonly IGenericRepository<Chaleco> _repositorio;
+        private readonly IReporteService _reporteService; // <-- nuevo 10 NOVIEMBRE
 
         // Constructor de la clase ChalecoService
         public ChalecoService(
-            IGenericRepository<Chaleco> repositorio
-            )
+            IGenericRepository<Chaleco> repositorio,
+            IReporteService reporteService  // <-- inyectar aquí
+)
         {
             _repositorio = repositorio;
+            _reporteService = reporteService;
         }
 
         // Lista los chalecos Activos con paginado, búsqueda y ordenamiento
@@ -108,18 +111,18 @@ namespace GestionAdminPolicial.BLL.Implementacion
             // Total después de aplicar búsqueda
             int filteredRecords = await query.CountAsync();
 
-            // 🔢 Ordenamiento (si querés más dinámico se puede agregar luego)
+            // Ordenamiento (si querés más dinámico se puede agregar luego)
             query = query
                 .OrderByDescending(c => c.FechaEliminacion)
                 .Skip(request.Start)
                 .Take(request.Length);
 
-            // 🔄 Ejecución de la consulta
+            // Ejecución de la consulta
             var data = await query.ToListAsync();
 
             Console.WriteLine($"[Eliminados] Total: {totalRecords}, Filtrados: {filteredRecords}, Data: {data.Count}");
 
-            // 📦 Retornar la estructura esperada por DataTables
+            // Retornar la estructura esperada por DataTables
             return new DataTableResponse<Chaleco>
             {
                 Draw = request.Draw,
@@ -181,6 +184,18 @@ namespace GestionAdminPolicial.BLL.Implementacion
 
                 if (chalecoCreado.IdChaleco == 0)
                     throw new TaskCanceledException("No se pudo crear el chaleco.");
+
+                // Registrar el reporte usando el IdUsuario que ya viene en entidad
+                if (entidad.IdUsuario.HasValue)
+                {
+                    await _reporteService.RegistrarReporteAsync(
+                        tipoRecurso: "Chaleco",
+                        idRecurso: chalecoCreado.IdChaleco.ToString(),
+                        accion: "Alta",
+                        idUsuario: entidad.IdUsuario.Value, // <-- usuario logueado
+                        observaciones: "Alta de chaleco en el sistema"
+                    );
+                }
 
                 // Recuperar la entidad con sus relaciones (Usuario y Personal)
                 IQueryable<Chaleco> query = await _repositorio.Consultar(c => c.IdChaleco == chalecoCreado.IdChaleco);
@@ -258,7 +273,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
             }
         }
 
-        // Metodo para Eliminar (lógicamente) un chaleco
+        // Método para eliminar (lógicamente) un chaleco
         public async Task<bool> Eliminar(int idChaleco, int idUsuario)
         {
             try
@@ -275,14 +290,29 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 chalecoExistente.FechaEliminacion = DateTime.Now;
                 chalecoExistente.IdUsuario = idUsuario; // registra quién lo eliminó
 
-                // Guardar cambios
-                return await _repositorio.Editar(chalecoExistente);
+                // Guardar cambios primero
+                bool resultado = await _repositorio.Editar(chalecoExistente);
+
+                if (!resultado)
+                    throw new Exception("No se pudo eliminar el chaleco.");
+
+                // Registrar el reporte de baja
+                await _reporteService.RegistrarReporteAsync(
+                    tipoRecurso: "Chaleco",
+                    idRecurso: chalecoExistente.IdChaleco.ToString(),
+                    accion: "Baja",
+                    idUsuario: idUsuario,
+                    observaciones: "Eliminación lógica del chaleco"
+                );
+
+                return true;
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el chaleco: " + ex.Message, ex);
             }
         }
+
 
         /// Restablece un chaleco que fue eliminado lógicamente.
         public async Task<bool> Restablecer(int idChaleco, int idUsuario)

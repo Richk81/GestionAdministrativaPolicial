@@ -7,7 +7,7 @@ insert into rol(descripcion,esActivo) values
 
 
 --________________________________ INSERTAR USUARIOS ________________________________
-SELECT * FROM usuario
+SELECT * FROM reportes
 --clave : 123
 insert into Usuario(nombre,correo,telefono,idRol,urlFoto,nombreFoto,clave,esActivo) values
 ('911','codigo@example.com','909090',1,'','','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',1)

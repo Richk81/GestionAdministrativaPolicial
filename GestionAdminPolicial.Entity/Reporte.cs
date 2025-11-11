@@ -15,7 +15,7 @@ public partial class Reporte
 
     public DateTime? FechaAccion { get; set; }
 
-    public int? IdUsuario { get; set; }
+    public int IdUsuario { get; set; }
 
     public string? Observaciones { get; set; }
 

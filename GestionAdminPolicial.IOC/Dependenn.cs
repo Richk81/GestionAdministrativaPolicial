@@ -48,6 +48,13 @@ namespace GestionAdminPolicial.IOC
 
             services.AddScoped<IChalecoService, ChalecoService>();
 
+            services.AddScoped<IReporteService, ReporteService>();
+
+            services.AddScoped<IRadioService, RadioService>();
+
+            services.AddScoped<IEscopetaService, EscopetaService>();
+
+            services.AddScoped<IVehiculoService, VehiculoService>();
         }
     }
 }
