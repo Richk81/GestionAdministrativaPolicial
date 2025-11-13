@@ -278,7 +278,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                     idRecurso: vehiculoExistente.IdVehiculo.ToString(),
                     accion: "Baja",
                     idUsuario: idUsuario,
-                    observaciones: "Eliminación lógica del vehículo"
+                    observaciones: $"El Vehículo con TUC N° '{vehiculoExistente.Tuc}' fue eliminado."
                 );
 
                 return true;
@@ -337,5 +337,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
             }
         }
 
+        // Para Dashboard - Cantidad de Vehiculo activo
+        public async Task<IQueryable<Vehiculo>> Consultar()
+        {
+            return await _repositorio.Consultar();
+        }
     }
 }

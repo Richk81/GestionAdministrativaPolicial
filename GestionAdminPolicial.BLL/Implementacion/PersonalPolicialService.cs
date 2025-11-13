@@ -18,15 +18,17 @@ namespace GestionAdminPolicial.BLL.Implementacion
     {
         //(SERVICIOS QUE VOY A UTILIZAR)   
         private readonly IGenericRepository<PersonalPolicial> _repositorio;
-
+        private readonly IReporteService _reporteService; // <-- nuevo 10 NOVIEMBRE
 
 
         // Constructor de la clase PersonalPolicialService
         public PersonalPolicialService(
-            IGenericRepository<PersonalPolicial> repositorio
+            IGenericRepository<PersonalPolicial> repositorio,
+            IReporteService reporteService  // <-- inyectar aquí
             )
         {
             _repositorio = repositorio;
+            _reporteService = reporteService;
         }
 
         // Lista el Personal Policial Activo con paginación, búsqueda y ordenamiento
@@ -186,6 +188,15 @@ namespace GestionAdminPolicial.BLL.Implementacion
         {
             try
             {
+                //Validar que no exista otro PERSONAL con el mismo Numero de LEGAJO
+                if (!string.IsNullOrEmpty(entidad.Legajo))
+                {
+                    IQueryable<PersonalPolicial> queryExistente = await _repositorio.Consultar(p => p.Legajo == entidad.Legajo);
+
+                    if (await queryExistente.AnyAsync())
+                        throw new Exception($"Ya existe un Personal con el N° de LEGAJO: '{entidad.Legajo}'.");
+                }
+
                 // Valores por defecto
                 entidad.Trasladado = false;
                 entidad.FechaEliminacion = null;
@@ -209,6 +220,18 @@ namespace GestionAdminPolicial.BLL.Implementacion
 
                 if (personalCreado.IdPersonal == 0)
                     throw new TaskCanceledException("No se pudo crear el personal policial.");
+
+                // Registrar el reporte usando el IdUsuario que ya viene en entidad
+                if (entidad.IdUsuario.HasValue)
+                {
+                    await _reporteService.RegistrarReporteAsync(
+                        tipoRecurso: "Personal Policial",
+                        idRecurso: personalCreado.IdPersonal.ToString(),
+                        accion: "Alta",
+                        idUsuario: entidad.IdUsuario.Value, // <-- usuario logueado
+                        observaciones: "Alta de Personal Policial en el sistema"
+                    );
+                }
 
                 //Traer la entidad ya con sus relaciones
                 IQueryable<PersonalPolicial> query = await _repositorio.Consultar(p => p.IdPersonal == personalCreado.IdPersonal);
@@ -323,19 +346,34 @@ namespace GestionAdminPolicial.BLL.Implementacion
         public async Task<bool> Trasladar(int idPersonal, int idUsuario)
         {
             try
-            {
+            {    // Obtener PersonalPolicial existente
                 IQueryable<PersonalPolicial> query = await _repositorio.Consultar(p => p.IdPersonal == idPersonal);
                 PersonalPolicial personalExistente = await query.FirstOrDefaultAsync();
 
                 if (personalExistente == null)
                     throw new Exception("El personal policial no existe en la base de datos.");
 
-                // 👇 Aquí aplicamos el traslado
+                // Aquí aplicamos el traslado
                 personalExistente.Trasladado = true;
                 personalExistente.FechaEliminacion = DateTime.Now;
                 personalExistente.IdUsuario = idUsuario;
 
-                return await _repositorio.Editar(personalExistente);
+                // Editar en base de datos
+                bool resultado = await _repositorio.Editar(personalExistente);
+
+                if (!resultado)
+                    throw new Exception("No se pudo trasladar el personal policial.");
+
+                // Registrar el reporte de Traslado
+                await _reporteService.RegistrarReporteAsync(
+                    tipoRecurso: "Personal Policial",
+                    idRecurso: personalExistente.IdPersonal.ToString(),
+                    accion: "Traslado",
+                    idUsuario: idUsuario,
+                    observaciones: $"El personal {personalExistente.ApellidoYnombre} (Grado: {personalExistente.Grado}, Legajo: {personalExistente.Legajo}) fue trasladado."
+                );
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -381,7 +419,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
             return personal;
         }
 
-
-
+        // Para Dashboard - Cantidad de personal activo
+        public async Task<IQueryable<PersonalPolicial>> Consultar()
+        {
+            return await _repositorio.Consultar();
+        }
     }
 }

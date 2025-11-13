@@ -12,19 +12,13 @@
     <link rel="stylesheet" href="~/vendor/datatables/extensiones/css/buttons.dataTables.min.css">
 }
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Historial de Reportes</h6>
+<div class="card shadow mb-4 border-0 rounded-3">
+    <div class="card-header py-3 bg-second-primary d-flex align-items-center">
+        <i class="fas fa-exchange-alt text-white me-2"></i>
+        <h5 class="m-0 fw-bold text-white"> Altas y Bajas de los Recursos del Sistema</h5>
     </div>
-    <div class="card-body">
-        <div class="row mb-3">
-            <div class="col-sm-12">
-                <p class="text-muted mb-0">
-                    En este módulo se listan todas las <strong>altas y bajas</strong> realizadas sobre los distintos recursos del sistema (chalecos, armas, vehículos, personal, etc.).
-                </p>
-            </div>
-        </div>
 
+    <div class="card-body">
         <div class="row">
             <div class="col-sm-12">
                 <table class="table table-bordered" id="tbdataReportes" cellspacing="0" style="width:100%">
@@ -33,7 +27,6 @@
                             <th>ID</th>  <!-- Oculto -->
                             <th>ID Recurso</th>  <!-- Oculto -->
                             <th>N°</th> <!-- Enumeración -->
-                            <th>N° Serie/Legajo</th>
                             <th>Tipo de Recurso</th>
                             <th>Acción</th>
                             <th>Usuario</th>

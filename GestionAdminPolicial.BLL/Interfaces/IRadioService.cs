@@ -34,5 +34,8 @@ namespace GestionAdminPolicial.BLL.Interfaces
 
         // Obtener por su ID
         Task<Radio> ObtenerPorId(int idRadio);
+
+        // Para Dashboard - Cantidad de Radio activo
+        Task<IQueryable<Radio>> Consultar();
     }
 }

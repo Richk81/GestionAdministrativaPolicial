@@ -38,5 +38,8 @@ namespace GestionAdminPolicial.BLL.Interfaces
         //Paginacion en el listado de Personal Policial Trasladados
         Task<DataTableResponse<PersonalPolicial>> ListarPaginadoTrasladados(DataTableRequest request);
 
+        // Para Dashboard - Cantidad de personal activo
+        Task<IQueryable<PersonalPolicial>> Consultar();
+
     }
 }

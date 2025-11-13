@@ -302,7 +302,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                     idRecurso: chalecoExistente.IdChaleco.ToString(),
                     accion: "Baja",
                     idUsuario: idUsuario,
-                    observaciones: "Eliminación lógica del chaleco"
+                    observaciones: $"El Chaleco con Serie N° '{chalecoExistente.SerieChaleco}' fue eliminado."
                 );
 
                 return true;
@@ -312,7 +312,6 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 throw new Exception("Error al eliminar el chaleco: " + ex.Message, ex);
             }
         }
-
 
         /// Restablece un chaleco que fue eliminado lógicamente.
         public async Task<bool> Restablecer(int idChaleco, int idUsuario)
@@ -422,5 +421,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
             return Asignar(idChaleco, null);
         }
 
+        // Para Dashboard - Cantidad de Chalecos activo
+        public async Task<IQueryable<Chaleco>> Consultar()
+        {
+            return await _repositorio.Consultar();
+        }
     }
 }

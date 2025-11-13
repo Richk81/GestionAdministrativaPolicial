@@ -34,5 +34,8 @@ namespace GestionAdminPolicial.BLL.Interfaces
 
         // Obtener por su ID
         Task<Escopeta> ObtenerPorId(int idRadio);
+
+        // Para Dashboard - Cantidad de Escopetas activo
+        Task<IQueryable<Escopeta>> Consultar();
     }
 }

@@ -260,7 +260,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                     idRecurso: radioExistente.IdRadio.ToString(),
                     accion: "Baja",
                     idUsuario: idUsuario,
-                    observaciones: "Eliminación lógica de la radio"
+                    observaciones: $"La radio con Serie N° '{radioExistente.SerieRadio}' fue eliminada."
                 );
 
                 return true;
@@ -319,5 +319,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
             }
         }
 
+        // Para Dashboard - Cantidad de Radios activo
+        public async Task<IQueryable<Radio>> Consultar()
+        {
+            return await _repositorio.Consultar();
+        }
     }
 }

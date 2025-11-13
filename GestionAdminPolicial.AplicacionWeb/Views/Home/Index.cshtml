@@ -2,7 +2,95 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Fondo institucional -->
+<div class="py-5" style="background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); min-height: 80vh;">
+
+    <div class="container text-center text-white">        
+        <h1 class="display-5 fw-bold animate__animated animate__fadeInDown animate__delay-1s">
+            Sistema: "Gestión Administrativa Policial"
+        </h1>
+
+        <img src="~/img/saludoUno.png" alt="Logo Policial" style="width: 109px; height: auto;" class="mb-4 animate__animated animate__fadeInDown">
+
+        <p class="lead mt-3 text-light animate__animated animate__fadeInDown animate__delay-2s">
+            Proyecto Final - Tecnicatura Superior en Desarrollo de Software
+        </p>
+
+        <p class="animate__animated animate__fadeInDown animate__delay-3s">
+            Desarrollado por <strong>Juan José "Richard" Arroyo</strong> - Año 2025
+        </p>
+    </div>
+
+    <div class="container mt-5">
+
+        <!-- FILA 1: 3 tarjetas -->
+        <div class="row justify-content-center">
+            <!-- Personal Policial -->
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-lg h-100 text-center animate__animated animate__fadeInUp animate__delay-1s">
+                    <div class="card-body">
+                        <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Personal Policial</h5>
+                        <p class="text-muted small">Registro, traslado y gestión de datos del personal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chalecos -->
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-lg h-100 text-center animate__animated animate__fadeInUp animate__delay-2s">
+                    <div class="card-body">
+                        <i class="fas fa-vest-patches fa-3x text-success mb-3"></i>
+                        <h5 class="fw-bold">Chalecos</h5>
+                        <p class="text-muted small">Control de chalecos, asignaciones, estado y vencimiento.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Armas -->
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-lg h-100 text-center animate__animated animate__fadeInUp animate__delay-3s">
+                    <div class="card-body">
+                        <i class="fas fa-crosshairs fa-3x text-danger mb-3"></i>
+                        <h5 class="fw-bold">Armas</h5>
+                        <p class="text-muted small">Gestión de armas y control de estado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILA 2: 2 tarjetas -->
+        <div class="row justify-content-center">
+            <!-- Vehículos -->
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-lg h-100 text-center animate__animated animate__fadeInUp animate__delay-4s">
+                    <div class="card-body">
+                        <i class="fas fa-car-side fa-3x text-warning mb-3"></i>
+                        <h5 class="fw-bold">Vehículos</h5>
+                        <p class="text-muted small">Administración de unidades móviles y reparaciones.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radios -->
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-lg h-100 text-center animate__animated animate__fadeInUp animate__delay-5s">
+                    <div class="card-body">
+                        <i class="fas fa-broadcast-tower fa-3x text-info mb-3"></i>
+                        <h5 class="fw-bold">Radios</h5>
+                        <p class="text-muted small">Gestión y control de equipos de comunicación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Frase institucional -->
+    <div class="text-center mt-5 text-light animate__animated animate__fadeInUp animate__delay-6s">
+        <hr class="my-4" style="width: 60%; border-color: rgba(255,255,255,0.3);">
+        <h6 class="fst-italic">
+            “Comprometidos con la transparencia, la seguridad y la eficiencia institucional.”
+        </h6>
+    </div>
 </div>

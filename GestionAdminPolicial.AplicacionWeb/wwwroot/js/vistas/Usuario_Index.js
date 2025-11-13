@@ -1,5 +1,4 @@
 ﻿
-
 const MODELO_BASE = {
     idUsuario: 0,
     nombre: "",

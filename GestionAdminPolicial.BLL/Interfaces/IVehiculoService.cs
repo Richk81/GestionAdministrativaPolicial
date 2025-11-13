@@ -35,5 +35,7 @@ namespace GestionAdminPolicial.BLL.Interfaces
         // Obtener por su ID
         Task<Vehiculo> ObtenerPorId(int idVehiculo);
 
+        // Para Dashboard - Cantidad de Vehiculo activo
+        Task<IQueryable<Vehiculo>> Consultar();
     }
 }

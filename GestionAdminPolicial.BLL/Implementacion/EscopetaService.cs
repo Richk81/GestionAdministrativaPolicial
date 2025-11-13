@@ -257,7 +257,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                     idRecurso: escopetaExistente.IdEscopeta.ToString(),
                     accion: "Baja",
                     idUsuario: idUsuario,
-                    observaciones: "Eliminación lógica de la escopeta"
+                    observaciones: $"La Escopeta con Serie N° '{escopetaExistente.SerieEscopeta}' fue eliminada."
                 );
 
                 return true;
@@ -316,5 +316,10 @@ namespace GestionAdminPolicial.BLL.Implementacion
             }
         }
 
+        // Para Dashboard - Cantidad de Escopeta activo
+        public async Task<IQueryable<Escopeta>> Consultar()
+        {
+            return await _repositorio.Consultar();
+        }
     }
 }

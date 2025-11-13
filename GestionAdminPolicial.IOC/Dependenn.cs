@@ -55,6 +55,8 @@ namespace GestionAdminPolicial.IOC
             services.AddScoped<IEscopetaService, EscopetaService>();
 
             services.AddScoped<IVehiculoService, VehiculoService>();
+
+            services.AddScoped<IDashboardService, DashboardService>();
         }
     }
 }

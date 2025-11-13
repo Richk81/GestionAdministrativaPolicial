@@ -44,5 +44,7 @@ namespace GestionAdminPolicial.BLL.Interfaces
         // Paginación en el listado de chalecos Eliminados
         Task<DataTableResponse<Chaleco>> ListarPaginadoEliminados(DataTableRequest request);
 
+        // Para Dashboard - Cantidad de Chalecos activo
+        Task<IQueryable<Chaleco>> Consultar();
     }
 }
