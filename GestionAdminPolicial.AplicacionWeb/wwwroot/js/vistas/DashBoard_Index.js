@@ -1,83 +1,105 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+
     const apiBaseUrl = "/api/v1/ApiDashboard";
 
-    // === 1. Cargar totales ===
+    /* =======================================================
+       1. CARGAR TOTALES
+    ======================================================== */
     async function cargarTotales() {
         try {
-            const response = await fetch(`${apiBaseUrl}/Totales`);
+            const response = await fetch(`${apiBaseUrl}/totales`);
             if (!response.ok) throw new Error("Error al obtener totales");
+
             const data = await response.json();
 
-            document.getElementById("totalPersonal").textContent = data.personalActivo ?? 0;
-            document.getElementById("totalChalecos").textContent = data.chalecosActivos ?? 0;
-            document.getElementById("totalEscopetas").textContent = data.escopetasActivas ?? 0;
-            document.getElementById("totalRadios").textContent = data.radiosActivas ?? 0;
-            document.getElementById("totalVehiculos").textContent = data.vehiculosActivos ?? 0;
+            document.getElementById("totalPersonal").textContent = data.totalPersonal ?? 0;
+            document.getElementById("totalChalecos").textContent = data.totalChalecos ?? 0;
+            document.getElementById("totalEscopetas").textContent = data.totalEscopetas ?? 0;
+            document.getElementById("totalRadios").textContent = data.totalRadios ?? 0;
+            document.getElementById("totalVehiculos").textContent = data.totalVehiculos ?? 0;
 
-            // Luego de cargar los totales, dibujamos el gráfico de distribución
+
+            // Gráfico de recursos
             renderGraficoRecursos(data);
+
         } catch (error) {
             console.error("Error:", error);
         }
     }
 
-    // === 2. Cargar Altas y Bajas por mes ===
-    async function cargarAltasYBajas(anioActual) {
+    /* =======================================================
+       2. CARGAR ALTAS / BAJAS (TRASLADOS) POR MES
+    ======================================================== */
+    async function cargarAltasYBajas(anio) {
         try {
-            const responseAltas = await fetch(`${apiBaseUrl}/AltasPorMes?anio=${anioActual}`);
-            const responseTraslados = await fetch(`${apiBaseUrl}/TrasladosPorMes?anio=${anioActual}`);
-            if (!responseAltas.ok || !responseTraslados.ok) throw new Error("Error al obtener datos de gráficos");
+            const respAltas = await fetch(`${apiBaseUrl}/altas-personal/${anio}`);
+            const respTraslados = await fetch(`${apiBaseUrl}/traslados-personal/${anio}`);
 
-            const altas = await responseAltas.json();
-            const traslados = await responseTraslados.json();
+            if (!respAltas.ok || !respTraslados.ok) {
+                throw new Error("Error al obtener datos de gráficos");
+            }
+
+            const altasDb = await respAltas.json();
+            const trasDb = await respTraslados.json();
+
+            // Convertimos los resultados en arrays de 12 meses
+            const altas = normalizarMeses(altasDb);
+            const traslados = normalizarMeses(trasDb);
 
             renderGraficoAltasBajas(altas, traslados);
+
         } catch (error) {
             console.error("Error:", error);
         }
     }
 
-    // === 3. Gráfico de Altas y Bajas ===
+    /* =======================================================
+       2.1. Normaliza los datos a 12 meses
+    ======================================================== */
+    function normalizarMeses(lista) {
+        const meses = Array(12).fill(0);
+        lista.forEach(item => {
+            meses[item.mes - 1] = item.total;
+        });
+        return meses;
+    }
+
+    /* =======================================================
+       3. GRÁFICO ALTAS / BAJAS
+    ======================================================== */
     function renderGraficoAltasBajas(altas, traslados) {
         const ctx = document.getElementById("chartAltasBajas").getContext("2d");
 
         new Chart(ctx, {
             type: "bar",
             data: {
-                labels: [
-                    "Ene", "Feb", "Mar", "Abr", "May", "Jun",
-                    "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
-                ],
+                labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                    "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                 datasets: [
                     {
                         label: "Altas",
                         data: altas,
-                        backgroundColor: "rgba(54, 162, 235, 0.6)",
-                        borderColor: "rgba(54, 162, 235, 1)",
-                        borderWidth: 1
+                        backgroundColor: "rgba(54, 162, 235, 0.6)"
                     },
                     {
                         label: "Traslados",
                         data: traslados,
-                        backgroundColor: "rgba(255, 99, 132, 0.6)",
-                        borderColor: "rgba(255, 99, 132, 1)",
-                        borderWidth: 1
+                        backgroundColor: "rgba(255, 99, 132, 0.6)"
                     }
                 ]
             },
             options: {
                 responsive: true,
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { precision: 0 }
-                    }
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
                 }
             }
         });
     }
 
-    // === 4. Gráfico de Distribución de Recursos ===
+    /* =======================================================
+       4. GRÁFICO DE DISTRIBUCIÓN DE RECURSOS
+    ======================================================== */
     function renderGraficoRecursos(data) {
         const ctx = document.getElementById("chartRecursos").getContext("2d");
 
@@ -87,20 +109,25 @@
                 labels: ["Personal", "Chalecos", "Escopetas", "Radios", "Vehículos"],
                 datasets: [{
                     data: [
-                        data.personalActivo ?? 0,
-                        data.chalecosActivos ?? 0,
-                        data.escopetasActivas ?? 0,
-                        data.radiosActivas ?? 0,
-                        data.vehiculosActivos ?? 0
+                        data.totalPersonal ?? 0,
+                        data.totalChalecos ?? 0,
+                        data.totalEscopetas ?? 0,
+                        data.totalRadios ?? 0,
+                        data.totalVehiculos ?? 0
                     ],
                     backgroundColor: [
-                        "#007bff", "#28a745", "#17a2b8", "#ffc107", "#343a40"
+                        "#4e73df",
+                        "#1cc88a",
+                        "#36b9cc",
+                        "#f6c23e",
+                        "#e74a3b"
                     ],
-                    borderWidth: 1
+                    hoverOffset: 8
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { position: "bottom" }
                 }
@@ -108,8 +135,12 @@
         });
     }
 
-    // === Inicializar ===
+    /* =======================================================
+       INICIALIZAR DASHBOARD
+    ======================================================== */
     const anioActual = new Date().getFullYear();
     cargarTotales();
     cargarAltasYBajas(anioActual);
+
 });
+
