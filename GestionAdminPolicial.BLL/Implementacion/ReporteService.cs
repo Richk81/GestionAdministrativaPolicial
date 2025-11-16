@@ -41,7 +41,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
 
 
         //Metodo para registrar un reporte (lo utilizo en otros servicios)
-        //--->No individual por eso no va en el controlador ApiReportesController
+        //--->No individual por eso NO lo utilizo en el controlador ApiReportesController
         public async Task RegistrarReporteAsync(string tipoRecurso, string idRecurso, string accion, int idUsuario, string observaciones = null)
         {
             var reporte = new Reporte

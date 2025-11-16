@@ -117,7 +117,7 @@ $(document).ready(function () {
             },
             'pageLength'
         ],
-        language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
+        language: { url: "/js/datatables/es-ES.json" }
     });
 
     
@@ -146,7 +146,7 @@ $(document).ready(function () {
     // 🔹 Evento click del botón Guardar Chaleco
     $("#btnGuardarChaleco").click(async function () {
 
-        // 🔸 Validación de campos obligatorios
+        // Validación de campos obligatorios
         const inputs = $("input.input-validar").serializeArray();
         const inputs_sin_valor = inputs.filter((item) => item.value.trim() === "");
 
@@ -169,10 +169,10 @@ $(document).ready(function () {
             observaciones: $("#txtObservaciones").val().trim()
         };
 
-        // 🔹 Loading overlay
+        // Loading overlay
         $("#modalChaleco").find("div.modal-content").LoadingOverlay("show");
 
-        // 🔸 Determinar si es creación o edición
+        // Determinar si es creación o edición
         const url = modelo.idChaleco === 0
             ? "/api/v1/ApiChaleco/Crear"
             : "/api/v1/ApiChaleco/Editar";
@@ -481,12 +481,12 @@ $(document).ready(function () {
                         $(".card-body").LoadingOverlay("show");
                     },
 
-                    // 👇 Se ejecuta después de recibir la respuesta (éxito o error)
+                    // Se ejecuta después de recibir la respuesta (éxito o error)
                     complete: function () {
                         $(".card-body").LoadingOverlay("hide");
                     },
 
-                    // 👇 Manejo de error para asegurarse de que el overlay se oculta incluso si falla
+                    // Manejo de error para asegurarse de que el overlay se oculta incluso si falla
                     error: function (xhr, status, error) {
                         $(".card-body").LoadingOverlay("hide");
                         console.error("Error al cargar los datos:", error);
@@ -519,7 +519,7 @@ $(document).ready(function () {
                     },
                     'pageLength'
                 ],
-                language: { url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json" }
+                language: { url: "/js/datatables/es-ES.json" }
             });
         } else {
             // Solo recargar si ya existe
