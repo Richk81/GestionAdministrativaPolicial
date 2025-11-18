@@ -11335,3 +11335,8 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+.fondo-inicio {
+    min-height: 80vh;
+    background: linear-gradient(135deg, #e8f0ff 0%, #c9ddff 50%, #b3ccff 100%);
+    color: #1b2e4a;
+}
