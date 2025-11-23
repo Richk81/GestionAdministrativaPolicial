@@ -258,14 +258,22 @@ $("#btnGuardarPersonal").click(async function () {
     }
 
     // Validación Teléfono de Emergencia: solo números
-    const telefono = $("#txtTelefonoEmergencia").val().trim();
+    const telefonoemergencia = $("#txtTelefonoEmergencia").val().trim();
 
-    if (telefono !== "" && !/^\d+$/.test(telefono)) {
+    if (telefonoemergencia !== "" && !/^\d+$/.test(telefonoemergencia)) {
         toastr.warning("", "El Teléfono de Emerg. debe contener solo números");
         $("#txtTelefonoEmergencia").focus();
         return;
     }
 
+    // Validación N° de Chapa: solo números
+    const chapa = $("#txtChapa").val().trim();
+
+    if (chapa !== "" && !/^\d+$/.test(chapa)) {
+        toastr.warning("", "El N° de Chapa debe contener solo números");
+        $("#txtChapa").focus();
+        return;
+    }
 
     // Validación correo
     const correo = $("#txtEmail").val().trim();
