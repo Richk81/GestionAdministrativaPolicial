@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GestionAdminPolicial.BLL.Implementacion
@@ -95,6 +96,13 @@ namespace GestionAdminPolicial.BLL.Implementacion
         //Lógica del método Crear usuarios
         public async Task<Usuario> Crear(Usuario entidad, Stream Foto = null, string NombreFoto = "", string UrlPlantillaCorreo = "")
         {
+            // Validar formato de correo
+            if (string.IsNullOrWhiteSpace(entidad.Correo) ||
+                !Regex.IsMatch(entidad.Correo, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
+            {
+                throw new Exception("Debe ingresar un correo electrónico válido.");
+            }
+
             Usuario usuario_existe = await _repositorio.Obtener(u => u.Correo == entidad.Correo);
 
             if (usuario_existe != null)
@@ -115,7 +123,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                 if (usuario_creado.IdUsuario == 0)
                     throw new TaskCanceledException("No se pudo crear el usuario.");
 
-                // ✅ Enviar correo de bienvenida con HttpClient
+                // Enviar correo de bienvenida con HttpClient
                 if (!string.IsNullOrEmpty(UrlPlantillaCorreo))
                 {
                     UrlPlantillaCorreo = UrlPlantillaCorreo

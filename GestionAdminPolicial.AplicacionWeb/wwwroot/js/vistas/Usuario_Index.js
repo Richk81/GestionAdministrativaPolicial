@@ -88,7 +88,7 @@ $(document).ready(function () {
         dom: "Bfrtip",
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '📊 Exportar Excel',
                 extend: 'excelHtml5',
                 title: '',
                 filename: 'Reporte Usuarios',
@@ -131,9 +131,9 @@ $("#btnGuardar").click(function () {
 
     if (inputs_sin_valor.length > 0) {
  // Si hay campos sin valor, mostramos un mensaje y enfocamos el primer campo vacío, acá lo creamos y los mostramos con toastr
-        const mensaje = `Debe completar los siguientes campos: "${inputs_sin_valor[0].name}"`;   
+        const mensaje = `Debe completar el siguiente campo: "${inputs_sin_valor[0].name}"`;   
         toastr.warning("", mensaje) // <-- Aquí está el toastr libreria para mostrar mensajes en pantalla
-        $(`input[name=${inputs_sin_valor[0].name}]`).focus()
+        $(`input[name="${inputs_sin_valor[0].name}"]`).focus()
         return;
     }
 

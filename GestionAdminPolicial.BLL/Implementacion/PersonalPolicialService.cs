@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GestionAdminPolicial.BLL.Implementacion
@@ -197,6 +198,18 @@ namespace GestionAdminPolicial.BLL.Implementacion
                         throw new Exception($"Ya existe un Personal con el N° de LEGAJO: '{entidad.Legajo}'.");
                 }
 
+                // Validar que el Legajo sea numérico
+                if (string.IsNullOrWhiteSpace(entidad.Legajo) || !Regex.IsMatch(entidad.Legajo, @"^\d+$"))
+                {
+                    throw new Exception("El Legajo debe contener solo números.");
+                }
+
+                // Validación DNI
+                if (string.IsNullOrWhiteSpace(entidad.Dni) || !Regex.IsMatch(entidad.Dni, @"^\d{8}$"))
+                {
+                    throw new Exception("El DNI debe contener exactamente 8 dígitos numéricos.");
+                }
+
                 // Valores por defecto
                 entidad.Trasladado = false;
                 entidad.FechaEliminacion = null;
@@ -229,7 +242,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                         idRecurso: personalCreado.IdPersonal.ToString(),
                         accion: "Alta",
                         idUsuario: entidad.IdUsuario.Value, // <-- usuario logueado
-                        observaciones: "Alta de Personal Policial en el sistema"
+                        observaciones: $"El personal {personalCreado.ApellidoYnombre} (Grado: {personalCreado.Grado}, Legajo: {personalCreado.Legajo}) fue Registrado."
                     );
                 }
 

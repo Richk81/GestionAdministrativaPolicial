@@ -1,32 +1,26 @@
-﻿// 🔹 Modelo base para crear/editar un vehículo
-const MODELO_BASE_VEHICULO = {
-    idVehiculo: 0,
-    tuc: "",
-    tipo: "",
-    dominio: "",
+﻿// Modelo base para crear/editar una radio
+const MODELO_BASE_RADIO = {
+    idRadio: 0,
+    serieRadio: "",
+    idUsuario: "",
     marcayModelo: "",
-    motorNumero: "",
-    chasisNumero: "",
-    añoFabricacion: "",
-    estadoVehiculo: "",
-    lugarDeReparacion: "",
+    estadoRadio: "",
+    tipo: "",
     observaciones: "",
-    kmActual: "",
-    ultimoService: ""
 };
 
-let tablaVehiculos;
-let vehiculoSeleccionado;
+let tablaRadios;
+let radioSeleccionada;
 
 $(document).ready(function () {
 
-    tablaVehiculos = $('#tbdataVehiculos').DataTable({
+    tablaRadios = $('#tbdataRadios').DataTable({
         responsive: true,
         autoWidth: false,
         serverSide: true,
         processing: true,
         ajax: {
-            url: '/api/v1/ApiVehiculo/ListarPaginado',
+            url: '/api/v1/ApiRadio/ListarPaginado',
             type: 'POST',
             contentType: 'application/json',
             data: function (d) {
@@ -45,20 +39,21 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { // Enumeración
+            { // Enumeración dinámica
                 data: null,
                 render: function (data, type, row, meta) {
                     return meta.row + 1 + meta.settings._iDisplayStart;
                 }
             },
-            { data: 'tuc' },
-            { data: 'tipo' },
+            { data: 'serieRadio' },
             { data: 'marcayModelo' },
-            { data: 'dominio' },
-            { data: 'estadoVehiculo' },
+            { data: 'tipo' },
+            { data: 'estadoRadio' },
+            { data: 'observaciones' },
             {
                 "data": "",
-                "defaultContent": '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
+                "defaultContent":
+                    '<button class="btn btn-primary btn-editar btn-sm mr-2"><i class="fas fa-pencil-alt"></i></button>' +
                     '<button class="btn btn-danger btn-eliminar btn-sm"><i class="fas fa-trash-alt"></i></button>',
                 "orderable": false,
                 "searchable": false,
@@ -72,81 +67,68 @@ $(document).ready(function () {
                 text: '📊 Exportar Excel',
                 extend: 'excelHtml5',
                 title: '',
-                filename: 'Reporte_Vehiculos',
-                exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                filename: 'Reporte_Radios',
+                exportOptions: { columns: [0, 1, 2, 3, 4, 5] }
             },
             'pageLength'
         ],
         language: { url: "/js/datatables/es-ES.json" }
-
     });
-
 });
 
-let filaSeleccionadaVehiculo;
+let filaSeleccionadaRadio;
 
-// 🔹 Evento click del botón Nuevo Vehículo
-$("#btnNuevoVehiculo").click(function () {
-    mostrarModalVehiculo(); // ← sin parámetros toma el modelo base
+$("#btnNuevaRadio").click(function () {
+    mostrarModalRadio(); // abre usando MODELO_BASE_RADIO
 });
 
-// 🔹 Función para mostrar modal con valores cargados
-function mostrarModalVehiculo(modelo = MODELO_BASE_VEHICULO) {
+function mostrarModalRadio(modelo = MODELO_BASE_RADIO) {
 
-    $("#txtIdVehiculo").val(modelo.idVehiculo);
-    $("#txtTuc").val(modelo.tuc);
-    $("#cboTipo").val(modelo.tipo);
+    $("#txtIdRadio").val(modelo.idRadio);
+    $("#txtSerieRadio").val(modelo.serieRadio);
     $("#txtMarcaYModelo").val(modelo.marcayModelo);
-    $("#txtDominio").val(modelo.dominio);
-    $("#txtAñoFabricacion").val(modelo.añoFabricacion);
-    $("#txtMotor").val(modelo.motorNumero);
-    $("#txtChasis").val(modelo.chasisNumero);
-    $("#cboEstado").val(modelo.estadoVehiculo);
-    $("#cboLugarDeReparacion").val(modelo.lugarDeReparacion);
+    $("#cboTipo").val(modelo.tipo);
+    $("#cboEstado").val(modelo.estadoRadio);
     $("#txtObservaciones").val(modelo.observaciones);
+
     // Abrir modal
     $("#modalData").modal("show");
 }
 
-// 🔹 Evento Guardar Vehículo
-$("#btnGuardarVehiculo").click(async function () {
+// Evento Guardar radio
+$("#btnGuardarRadio").click(async function () {
 
     // Validación de campos obligatorios
-    const inputs = $("input.input-validar").serializeArray();
+    const inputs = $("input.input-validar, select.input-validar").serializeArray();
     const vacios = inputs.filter(x => x.value.trim() === "");
 
     if (vacios.length > 0) {
         toastr.warning(`Debe completar el campo: "${vacios[0].name}"`);
-        $(`input[name="${vacios[0].name}"]`).focus();
+        $(`input[name="${vacios[0].name}"], select[name="${vacios[0].name}"]`).focus();
         return;
     }
 
-    // Construcción del modelo
+    // Construcción del modelo para enviar al backend
     const modelo = {
-        idVehiculo: parseInt($("#txtIdVehiculo").val()) || 0,
-        tuc: $("#txtTuc").val().trim(),
+        idRadio: parseInt($("#txtIdRadio").val()) || 0,
+        serieRadio: $("#txtSerieRadio").val().trim(),
+        marcayModelo: $("#txtMarcaYModelo").val().trim(),
         tipo: $("#cboTipo").val(),
-        marcaYModelo: $("#txtMarcaYModelo").val().trim(),
-        dominio: $("#txtDominio").val().trim(),
-        añoFabricacion: $("#txtAñoFabricacion").val(),
-        motorNumero: $("#txtMotor").val().trim(),
-        chasisNumero: $("#txtChasis").val().trim(),
-        estadoVehiculo: $("#cboEstado").val(),
-        lugarDeReparacion: $("#cboLugarDeReparacion").val(),
+        estadoRadio: $("#cboEstado").val(),
         observaciones: $("#txtObservaciones").val().trim()
     };
 
-    // Loading overlay
     $("#modalData .modal-content").LoadingOverlay("show");
 
-    // Determinar si es creación o edición
-    const url = modelo.idVehiculo === 0
-        ? "/api/v1/ApiVehiculo/Crear"
-        : "/api/v1/ApiVehiculo/Editar";
+    // Crear o Editar
+    const url = modelo.idRadio === 0
+        ? "/api/v1/ApiRadio/Crear"
+        : "/api/v1/ApiRadio/Editar";
 
-    const method = modelo.idVehiculo === 0 ? "POST" : "PUT";
+    const method = modelo.idRadio === 0 ? "POST" : "PUT";
 
     try {
+
         const response = await fetch(url, {
             method,
             headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -158,18 +140,22 @@ $("#btnGuardarVehiculo").click(async function () {
         $("#modalData .modal-content").LoadingOverlay("hide");
 
         if (result.estado) {
-            const vehiculo = result.objeto;
 
-            if (modelo.idVehiculo === 0) {
-                tablaVehiculos.row.add(vehiculo).draw(false);
-                swal("Listo", "El vehículo fue registrado correctamente", "success");
+            const radio = result.objeto;
+
+            if (modelo.idRadio === 0) {
+                // Alta
+                tablaRadios.row.add(radio).draw(false);
+                swal("Listo", "La Radio fue registrada correctamente", "success");
             } else {
-                tablaVehiculos.row(filaSeleccionadaVehiculo).data(vehiculo).draw(false);
-                filaSeleccionadaVehiculo = null;
-                swal("Listo", "El vehículo fue actualizado correctamente", "success");
+                // Edición
+                tablaRadios.row(filaSeleccionadaRadio).data(radio).draw(false);
+                filaSeleccionadaRadio = null;
+                swal("Listo", "La Radio fue actualizada correctamente", "success");
             }
 
             $("#modalData").modal("hide");
+
         } else {
             swal("Error", result.mensaje, "error");
         }
@@ -177,57 +163,66 @@ $("#btnGuardarVehiculo").click(async function () {
     } catch (err) {
         $("#modalData .modal-content").LoadingOverlay("hide");
         console.error(err);
-        swal("Error", "No se pudo registrar el vehículo", "error");
+        swal("Error", "No se pudo registrar la radio", "error");
     }
 });
 
-// Evento Editar Vehículo
-$("#tbdataVehiculos tbody").on("click", ".btn-editar", function () {
+$("#tbdataRadios tbody").on("click", ".btn-editar", function () {
 
-    filaSeleccionadaVehiculo = $(this).closest("tr");
-    const data = tablaVehiculos.row(filaSeleccionadaVehiculo).data();
+    filaSeleccionadaRadio = $(this).closest("tr");
+
+    const data = tablaRadios.row(filaSeleccionadaRadio).data();
+
+    mostrarModalRadio(data);
+});
+
+// Evento Editar Radio
+$("#tbdataRadios tbody").on("click", ".btn-editar", function () {
+
+    filaSeleccionadaRadio = $(this).closest("tr");
+    const data = tablaRadios.row(filaSeleccionadaRadio).data();
 
     if (!data) {
         console.error("No se pudo obtener los datos de la fila seleccionada");
         return;
     }
 
-    const idVehiculo = data.idVehiculo;
+    const idRadio = data.idRadio;
 
     $.ajax({
         type: "GET",
-        url: `/api/v1/ApiVehiculo/Obtener/${idVehiculo}`,
+        url: `/api/v1/ApiRadio/Obtener/${idRadio}`,
         success: function (response) {
 
-            const vehiculo = response.objeto;
+            const radio = response.objeto;
 
-            if (!vehiculo) {
-                swal("Error", "No se encontró el vehículo solicitado", "error");
+            if (!radio) {
+                swal("Error", "No se encontró la Radio solicitada", "error");
                 return;
             }
 
-            mostrarModalVehiculo(vehiculo);
+            mostrarModalRadio(radio);
         },
         error: function (err) {
-            swal("Error", "No se pudo recuperar información del vehículo", "error");
+            swal("Error", "No se pudo recuperar información de la radio", "error");
             console.error(err);
         }
     });
 });
 
-// Botón ELIMINAR para VEHÍCULO
-$("#tbdataVehiculos tbody").on("click", ".btn-eliminar", function () {
+// Botón ELIMINAR para RADIO
+$("#tbdataRadios tbody").on("click", ".btn-eliminar", function () {
 
-    // Obtenemos la fila seleccionada
+    // Fila seleccionada
     const filaSeleccionada = $(this).closest("tr");
 
-    // Obtenemos los datos de esa fila desde DataTables
-    const data = tablaVehiculos.row(filaSeleccionada).data();
-    const idVehiculo = data.idVehiculo;
+    // Datos de la fila desde DataTables
+    const data = tablaRadios.row(filaSeleccionada).data();
+    const idRadio = data.idRadio;
 
     swal({
         title: "¿Estás seguro?",
-        text: `¿Desea eliminar el vehículo con TUC N° "${data.tuc}"?`,
+        text: `¿Desea eliminar la Radio con Serie N° "${data.serieRadio}"?`,
         icon: "warning",
         buttons: {
             cancel: "Cancelar",
@@ -238,49 +233,51 @@ $("#tbdataVehiculos tbody").on("click", ".btn-eliminar", function () {
         },
         dangerMode: true,
     }).then((respuesta) => {
+
         if (respuesta) {
+
             // Mostrar overlay de carga
             $(".showSweetAlert").LoadingOverlay("show");
 
-            // Llamada al back-end para eliminar el vehículo
+            // Llamada al back-end
             $.ajax({
                 type: "PATCH",
-                url: `/api/v1/ApiVehiculo/Eliminar/${idVehiculo}`,
+                url: `/api/v1/ApiRadio/Eliminar/${idRadio}`,
                 success: function (response) {
+
                     $(".showSweetAlert").LoadingOverlay("hide");
 
                     if (response.estado) {
-                        swal("¡Eliminado!", response.mensaje, "success");
-                        // Recargar DataTable sin perder la página actual
-                        tablaVehiculos.ajax.reload(null, false);
+                        swal("¡Eliminada!", response.mensaje, "success");
+                        // Recargar DataTable sin perder la página
+                        tablaRadios.ajax.reload(null, false);
                     } else {
-                        swal("Error", response.mensaje || "No se pudo eliminar el vehículo.", "error");
+                        swal("Error", response.mensaje || "No se pudo eliminar la radio.", "error");
                     }
                 },
                 error: function (err) {
                     $(".showSweetAlert").LoadingOverlay("hide");
                     console.error(err);
-                    swal("Error", "Error al intentar eliminar el vehículo.", "error");
+                    swal("Error", "Error al intentar eliminar la radio.", "error");
                 }
             });
         }
     });
 });
 
+let tablaRadiosEliminadas;
 
-let tablaVehiculosEliminados;
+$("#btnRadiosEliminadas").on("click", function () {
 
-$("#btnVehiculosEliminados").on("click", function () {
+    if (!$.fn.DataTable.isDataTable('#tbRadiosEliminadas')) {
 
-    if (!$.fn.DataTable.isDataTable('#tbVehiculosEliminados')) {
-
-        tablaVehiculosEliminados = $('#tbVehiculosEliminados').DataTable({
+        tablaRadiosEliminadas = $('#tbRadiosEliminadas').DataTable({
             responsive: true,
             autoWidth: false,
             serverSide: true,
             processing: true,
             ajax: {
-                url: '/api/v1/ApiVehiculo/ListarPaginadoEliminados', // tu endpoint
+                url: '/api/v1/ApiRadio/ListarPaginadoEliminadas', // tu endpoint
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
@@ -300,10 +297,10 @@ $("#btnVehiculosEliminados").on("click", function () {
             },
             columns: [
                 { data: null, render: (data, type, row, meta) => meta.row + 1 + meta.settings._iDisplayStart },
-                { data: 'tuc' },
+                { data: 'serieRadio' },
                 { data: 'marcayModelo' },
                 { data: 'tipo' },
-                { data: 'estadoVehiculo', render: d => d ? d : '-' },
+                { data: 'estadoRadio', render: d => d ? d : '-' },
                 { data: 'observaciones', render: d => d ? d : '-' },
                 {
                     data: 'fechaEliminacion',
@@ -319,7 +316,7 @@ $("#btnVehiculosEliminados").on("click", function () {
                     text: '📊 Exportar Excel',
                     extend: 'excelHtml5',
                     title: '',
-                    filename: 'Reporte_Vehiculos_Eliminados',
+                    filename: 'Reporte_Radios_Eliminadas',
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
                 },
                 'pageLength'
@@ -328,8 +325,10 @@ $("#btnVehiculosEliminados").on("click", function () {
         });
 
     } else {
-        tablaVehiculosEliminados.ajax.reload();
+        tablaRadiosEliminadas.ajax.reload();
     }
 
-    $("#modalVehiculosEliminados").modal("show");
+    $("#modalRadiosEliminadas").modal("show");
 });
+
+

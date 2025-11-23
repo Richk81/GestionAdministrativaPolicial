@@ -1,0 +1,92 @@
+JSON exacto que espera tu endpoint ListarPaginado. chaleco
+
+{
+  "draw": 1,
+  "start": 0,
+  "length": 10,
+  "search": {
+    "value": "",
+    "regex": false
+  },
+  "order": [
+    {
+      "column": 0,
+      "dir": "asc"
+    }
+  ],
+  "columns": [
+    {
+      "data": "SerieChaleco",
+      "name": "SerieChaleco",
+      "searchable": true,
+      "orderable": true,
+      "search": {
+        "value": "",
+        "regex": false
+      }
+    },
+    {
+      "data": "MarcaYModelo",
+      "name": "MarcaYModelo",
+      "searchable": true,
+      "orderable": true,
+      "search": {
+        "value": "",
+        "regex": false
+      }
+    },
+    {
+      "data": "Talle",
+      "name": "Talle",
+      "searchable": true,
+      "orderable": true,
+      "search": {
+        "value": "",
+        "regex": false
+      }
+    },
+    {
+      "data": "AnoFabricacion",
+      "name": "AnoFabricacion",
+      "searchable": true,
+      "orderable": true,
+      "search": {
+        "value": "",
+        "regex": false
+      }
+    },
+    {
+      "data": "AnoVencimiento",
+      "name": "AnoVencimiento",
+      "searchable": true,
+      "orderable": true,
+      "search": {
+        "value": "",
+        "regex": false
+      }
+    },
+    {
+      "data": "EstadoChaleco",
+      "name": "EstadoChaleco",
+      "searchable": true,
+      "orderable": true,
+      "search": {
+        "value": "",
+        "regex": false
+      }
+    }
+  ]
+}
+
+PARA CREAR UN CHALECO
+{
+  "serieChaleco": "ABC123",
+  "marcaYmodelo": "PROTEC XT-200",
+  "talle": "L",
+  "anoFabricacion": "2023-01-01",
+  "anoVencimiento": "2028-01-01",
+  "estadoChaleco": "Operativo",
+  "observaciones": "Sin observaciones",
+  "idPersonal": 5,
+  "idUsuario": 1
+}

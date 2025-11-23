@@ -17,7 +17,10 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-white">Lista de Chalecos</h6>
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-vest-patches fa-lg mr-2"></i> Lista de Chalecos
+        </h6>
+
         <div class="d-flex gap-2">
             <!-- Botón Nuevo Chaleco -->
             <button class="btn btn-success btn-sm d-flex align-items-center shadow-sm" id="btnNuevoChaleco">
@@ -85,6 +88,7 @@
                                 <div class="form-group col-sm-6">
                                     <label for="cboTalle">Talle</label>
                                     <select class="form-control form-control-sm input-validar" id="cboTalle" name="Talle">
+                                        <option value="">-- Seleccione --</option>
                                         <option value="S">S</option>
                                         <option value="M">M</option>
                                         <option value="L">L</option>
@@ -107,6 +111,7 @@
                                 <div class="form-group col-sm-6">
                                     <label for="cboEstado">Estado</label>
                                     <select class="form-control form-control-sm input-validar" id="cboEstado">
+                                        <option value="">-- Seleccione --</option>
                                         <option value="Operativo">Operativo</option>
                                         <option value="Fuera de Servicio">Fuera de Servicio</option>
                                         <option value="Secuestrado">Secuestrado</option>

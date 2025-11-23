@@ -16,7 +16,10 @@
 <!-- DataTales del Personal -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Roll de Combate Personal Policial</h6>
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-user-shield fa-2x mr-2"></i> Roll de Combate Personal Policial
+        </h6>
+
     </div>
     <div class="card-body">
         <div class="row">
@@ -65,7 +68,7 @@
                     <input type="hidden" value="0" id="txtIdArma">
                     <input type="hidden" value="0" id="txtIdDomicilio">
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="form-row">
                                 <div class="form-group col-sm-6">
                                     <label for="txtLegajo">Legajo</label>
@@ -80,7 +83,7 @@
                                 <div class="form-group col-sm-6">
                                     <label for="cboGrado">Grado</label>
                                     <select class="form-control form-control-sm input-validar" id="cboGrado" name="Grado">
-                                        <option value="">-- Seleccione un grado --</option>
+                                        <option value="">-- Seleccione --</option>
                                         <option value="Comisario General">Comisario General</option>
                                         <option value="Comisario Mayor">Comisario Mayor</option>
                                         <option value="Comisario Inspector">Comisario Inspector</option>
@@ -171,6 +174,7 @@
                                 <div class="form-group col-sm-6">
                                     <label for="cboRevista">Situación de Revista</label>
                                     <select class="form-control form-control-sm input-validar" id="cboRevista" name="Sit. Revista">
+                                        <option value="">-- Seleccione --</option>
                                         <option value="Operativo">Operativo</option>
                                         <option value="LAO">LAO</option>
                                         <option value="Nota Medica">Nota Médica</option>
@@ -281,19 +285,8 @@
                                     <input type="email" class="form-control form-control-sm" id="txtEmail" name="Email">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <img id="imgPersonalPolicial"
-                                 src=""
-                                 class="img-fluid rounded mx-auto d-block mb-2"
-                                 alt="Foto del Personal"
-                                 style="width: 200px; height: 200px; object-fit: cover; background-color: #f2f2f2;">
-                            <input type="file"
-                                   class="form-control"
-                                   id="txtFotoPersonalPolicial"
-                                   accept="image/*">
-                        </div>
-                    </div>
+                        </div> <!-- cierre col-sm-8 -->
+                    </div> <!-- cierre row -->
                 </form>
             </div>
             <div class="modal-footer">

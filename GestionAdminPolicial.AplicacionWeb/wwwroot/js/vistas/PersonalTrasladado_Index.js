@@ -120,7 +120,7 @@ $(document).ready(function () {
         dom: "Bfrtip",
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '📊 Exportar Excel',
                 extend: 'excelHtml5',
                 title: '',
                 filename: 'Reporte_PersonalTrasladado',

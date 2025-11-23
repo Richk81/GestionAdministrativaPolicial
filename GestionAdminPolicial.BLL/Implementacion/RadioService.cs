@@ -157,7 +157,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                         idRecurso: radioCreado.IdRadio.ToString(),
                         accion: "Alta",
                         idUsuario: entidad.IdUsuario.Value, // usuario logueado
-                        observaciones: "Alta de radio en el sistema"
+                        observaciones: $"La radio con Serie N° '{radioCreado.SerieRadio}' fue Registrada."
                     );
                 }
 

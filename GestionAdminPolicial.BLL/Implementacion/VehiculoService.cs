@@ -168,7 +168,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                         idRecurso: vehiculoCreado.IdVehiculo.ToString(),
                         accion: "Alta",
                         idUsuario: entidad.IdUsuario.Value, // usuario logueado
-                        observaciones: "Alta de vehículo en el sistema"
+                        observaciones: $"El Vehículo con TUC N° '{vehiculoCreado.Tuc}' fue Registrado."
                     );
                 }
 

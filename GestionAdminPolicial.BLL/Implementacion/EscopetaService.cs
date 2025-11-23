@@ -155,7 +155,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                         idRecurso: escopetaCreada.IdEscopeta.ToString(),
                         accion: "Alta",
                         idUsuario: entidad.IdUsuario.Value, // Usuario logueado
-                        observaciones: "Alta de escopeta en el sistema"
+                        observaciones: $"La Escopeta con Serie N° '{escopetaCreada.SerieEscopeta}' fue Registrada."
                     );
                 }
 

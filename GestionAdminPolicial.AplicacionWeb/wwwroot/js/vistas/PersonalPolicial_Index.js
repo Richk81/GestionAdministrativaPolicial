@@ -25,7 +25,7 @@ const MODELO_BASE_PERSONAL = {
     urlImagen: "",
     nombreImagen: "",
 
-    // 🔹 Relaciones como arrays vacíos por defecto
+    // Relaciones como arrays vacíos por defecto
     domicilios: [
         {
             calleBarrio: "",
@@ -42,7 +42,7 @@ const MODELO_BASE_PERSONAL = {
 };
 
 
-// 🔹 DataTable (Personal Policial / Lista)
+// DataTable (Personal Policial / Lista)
 let tablaData;
 
 $(document).ready(function () {
@@ -76,7 +76,7 @@ $(document).ready(function () {
             { // Columna de enumeración
                 data: null,
                 render: function (data, type, row, meta) {
-                    return meta.row + 1 + meta.settings._iDisplayStart; // empieza en 1
+                    return meta.row + 1 + meta.settings._iDisplayStart; // empieza en 1 y sigue correlativo en cada pagina
                 },
                 orderable: false,
                 searchable: false
@@ -112,7 +112,7 @@ $(document).ready(function () {
         dom: "Bfrtip",
         buttons: [
             {
-                text: 'Exportar Excel',
+                text: '📊 Exportar Excel',
                 extend: 'excelHtml5',
                 title: '',
                 filename: 'Reporte_PersonalPolicial',
@@ -125,14 +125,14 @@ $(document).ready(function () {
 });
 
 
-// 🔹 Abrir modal para "Nuevo Personal"
+// Abrir modal para "Nuevo Personal"
 $("#btnNuevoPersonal").click(function () {
     mostrarModalPersonal();
 });
 
-// 🔹 Mostrar Modal de Personal
+// Mostrar Modal de Personal
 function mostrarModalPersonal(modelo = MODELO_BASE_PERSONAL) {
-    // 🔹 Datos generales
+    // Datos generales
     $("#txtIdPersonal").val(modelo.idPersonal);
     $("#txtLegajo").val(modelo.legajo);
     $("#txtApellidoYNombre").val(modelo.apellidoYNombre);
@@ -156,17 +156,17 @@ function mostrarModalPersonal(modelo = MODELO_BASE_PERSONAL) {
     $("#txtEmail").val(modelo.email);
     $("#txtDetalles").val(modelo.detalles);
 
-    // 🔹 Domicilio (si existe)
+    // Domicilio (si existe)
     const domicilio = (modelo.domicilios && modelo.domicilios.length > 0) ? modelo.domicilios[0] : {};
     $("#txtDomicilio").val(domicilio.calleBarrio || "");
     $("#txtLocalidad").val(domicilio.localidad || "");
     $("#txtCriaJurisdiccional").val(domicilio.comisariaJuris || "");
     $("#txtIdDomicilio").val(domicilio.idDomicilio || 0); // 🔹 asignar ID
 
-    // 🔹 Arma (si existe)
+    // Arma (si existe)
     const arma = (modelo.armas && modelo.armas.length > 0) ? modelo.armas[0] : { marca: "No Provista", numeroSerie: "No Provista" };
 
-    // 🔹 Guardar el IdArma en hidden
+    // Guardar el IdArma en hidden
     $("#txtIdArma").val(arma.idArma || 0);
 
     if (arma.marca !== "No Provista") {
@@ -197,13 +197,10 @@ function mostrarModalPersonal(modelo = MODELO_BASE_PERSONAL) {
         // Si el personal tiene imagen guardada, la mostramos
         $("#imgPersonalPolicial").attr("src", modelo.urlImagen);
     } else {
-        // Si no tiene imagen, dejamos el src vacío (no mostramos nada)
         $("#imgPersonalPolicial").attr("src", "");
     }
-    //Limpiamos siempre el input de archivo por si el usuario quiere subir otra
     $("#txtFotoPersonalPolicial").val("");
 
-    //Abrir modal
     $("#modalPersonal").modal("show");
 }
 
@@ -216,7 +213,7 @@ $("#btnNuevoPersonal").click(function () {
 // Evento click del botón Guardar Personal
 $("#btnGuardarPersonal").click(async function () {
 
-    // 🔹 Validación de campos obligatorios
+    // Validación de campos obligatorios
     const inputs = $("input.input-validar").serializeArray();
     const inputs_sin_valor = inputs.filter((item) => item.value.trim() === "");
 
@@ -227,13 +224,43 @@ $("#btnGuardarPersonal").click(async function () {
         return;
     }
 
-    // 🔹 Validación Domicilios
+    // Validación Domicilios
     if (!$("#txtDomicilio").val() || !$("#txtLocalidad").val() || !$("#txtCriaJurisdiccional").val()) {
         toastr.warning("", "Debe completar: Domicilio-Localidad-Comisaria");
         return;
     }
 
-    // 🔹 Construcción del modelo
+    // Validación DNI
+    const dni = $("#txtDNI").val().trim();
+
+    if (!/^[0-9]{8}$/.test(dni)) {
+        toastr.warning("", "El DNI debe contener 8 dígitos numéricos");
+        $("#txtDNI").focus();
+        return;
+    }
+
+    // Validación Legajo
+    const legajo = $("#txtLegajo").val().trim();
+
+    if (!/^\d+$/.test(legajo)) {
+        toastr.warning("", "El Legajo debe contener solo números");
+        $("#txtLegajo").focus();
+        return;
+    }
+
+    // Validación correo
+    const correo = $("#txtEmail").val().trim();
+
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Si escribió algo → validar
+    if (correo !== "" && !regexCorreo.test(correo)) {
+        toastr.warning("", "Ingrese un correo electrónico válido");
+        $("#txtEmail").focus();
+        return;
+    }
+
+    // Construcción del modelo
     const modelo = structuredClone(MODELO_BASE_PERSONAL);
 
     modelo.idPersonal = parseInt($("#txtIdPersonal").val());
@@ -259,7 +286,7 @@ $("#btnGuardarPersonal").click(async function () {
     modelo.email = $("#txtEmail").val();
     modelo.detalles = $("#txtDetalles").val();
 
-    // 🔹 Domicilios (array)
+    // Domicilios (array)
     modelo.domicilios = [
         {
             idDomicilio: parseInt($("#txtIdDomicilio").val()) || 0, // ← agregar ID
@@ -269,7 +296,7 @@ $("#btnGuardarPersonal").click(async function () {
         }
     ];
 
-    // 🔹 Armas (array)
+    // Armas (array)
     modelo.armas = [];
     if ($("#chkArmaProvista").is(":checked")) {
         modelo.armas.push({
@@ -279,25 +306,25 @@ $("#btnGuardarPersonal").click(async function () {
         });
     } else {
         modelo.armas.push({
-            idArma: parseInt($("#txtIdArma").val()) || 0, // 🔹 siempre enviar el id
+            idArma: parseInt($("#txtIdArma").val()) || 0, // siempre enviar el id
             marca: "No Provista",
             numeroSerie: "No Provista"
         });
     }
 
-    //foto
-    const inputFoto = document.getElementById("txtFotoPersonalPolicial");
-    const formData = new FormData();
-
+    //COMENTADO xque ya no trabajo con fotos
+    //const inputFoto = document.getElementById("txtFotoPersonalPolicial");
     // Solo agregamos foto si el usuario seleccionó un archivo
-    if (inputFoto.files.length > 0) {
-        formData.append("foto", inputFoto.files[0]);
-    }
+    //if (inputFoto.files.length > 0) {
+     //   formData.append("foto", inputFoto.files[0]);
+    //}
 
+
+    const formData = new FormData();
     // Siempre enviar modelo como JSON
     formData.append("modelo", JSON.stringify(modelo));
 
-    // 🔹 Loading overlay
+    // Loading overlay
     $("#modalPersonal").find("div.modal-content").LoadingOverlay("show");
 
     let url = modelo.idPersonal === 0
@@ -358,8 +385,6 @@ $("#tbdataPersonal tbody").on("click", ".btn-editar", function () {
             alert("No se pudo obtener los datos del personal.");
         }
     });
-
-
 });
 
 

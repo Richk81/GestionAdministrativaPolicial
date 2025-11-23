@@ -16,47 +16,38 @@
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 bg-second-primary">
-        <h6 class="m-0 font-weight-bold text-white">Lista de Escopetas</h6>
+    <div class="card-header py-3 bg-second-primary d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-white">
+            <i class="fas fa-bullseye fa-lg mr-2"></i> Lista de Escopetas
+        </h6>
+
+
+        <div class="d-flex gap-2">
+            <!-- Botón Nueva Escopeta -->
+            <button class="btn btn-success btn-sm d-flex align-items-center shadow-sm" id="btnNuevaEscopeta">
+                <i class="fas fa-user-plus me-2"></i> Nueva Escopeta
+            </button>
+
+            <!-- Botón Escopetas Eliminados -->
+            <button class="btn btn-danger btn-sm d-flex align-items-center shadow-sm" id="btnEscopetasEliminadas">
+                <i class="fas fa-trash me-2"></i> Escopetas Eliminadas
+            </button>
+        </div>
     </div>
     <div class="card-body">
-        <div class="row mb-2">
-            <div class="col-sm-3">
-                <button class="btn btn-success" data-toggle="modal" data-target="#modalData">
-                    <i class="fas fa-user-plus"></i> Nueva Escopeta
-                </button>
-            </div>
-        </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="tbdataEscopetas" cellspacing="0" style="width:100%">
+            <table class="table table-bordered" id="tbdataEscopeta" cellspacing="0" style="width:100%">
                 <thead>
                     <tr>
                         <th>N°</th> <!-- Enumeración -->
                         <th>N° de Serie</th>
                         <th>Marca y Modelo</th>
                         <th>Estado</th>
+                        <th>Observaciones</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td> <!-- Enumeración ejemplo -->
-                        <td>100010</td>
-                        <td>Maroon Dolphyng</td>
-                        <td>Operativo</td>
-                        <td>
-                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalles" title="Ver detalles">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-primary btn-sm" title="Editar">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -70,37 +61,38 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h6 class="modal-title">Detalle Escopeta</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <h6>Detalle de la Escopeta a Registrar</h6>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
                 </button>
             </div>
 
             <div class="modal-body">
-                <form id="formChaleco">
-                    <input type="hidden" id="txtId" value="0">
+                <form id="formEscopeta">
+                    <input type="hidden" id="txtIdEscopeta" value="0">
 
                     <div class="form-row">
                         <div class="form-group col-sm-6">
                             <label for="txtSerie">N° de Serie</label>
-                            <input type="text" class="form-control form-control-sm input-validar" id="txtSerie" name="Serie">
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtSerie" name="N° de Serie">
                         </div>
                         <div class="form-group col-sm-6">
-                            <label for="txtMarcaModelo">Marca y Modelo</label>
-                            <input type="text" class="form-control form-control-sm input-validar" id="txtMarcaModelo" name="MarcaModelo">
+                            <label for="txtMarcaYModelo">Marca y Modelo</label>
+                            <input type="text" class="form-control form-control-sm input-validar" id="txtMarcaYModelo" name="Marca y Modelo">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-sm-6">
                             <label for="cboEstado">Estado</label>
-                            <select class="form-control form-control-sm" id="cboEstado">
-                                <option value="Operativo">Operativo</option>
+                            <select class="form-control form-control-sm input-validar" id="cboEstado" name="Estado Escopeta">
+                                <option value="">-- Seleccione --</option>
+                                <option value="Operativo">Operativa</option>
                                 <option value="Fuera de Servicio">Fuera de Servicio</option>
                                 <option value="En Reparacion">En Reparacion</option>
                                 <option value="Extraviada">Extraviada</option>
                                 <option value="Secuestrada">Secuestrada</option>
-                                <option value="Comisionado">Comisionado</option>
+                                <option value="Comisionado">Comisionada</option>
                                 <option value="Otro">Otro</option>
                             </select>
                         </div>
@@ -116,13 +108,54 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnGuardarEscopeta">Guardar</button>
                 <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
             </div>
 
         </div>
     </div>
 </div>
+
+<!-- Modal ESCOPETAS EliminadAs -->
+<div class="modal fade" id="modalEscopetasEliminadas" tabindex="-1" aria-labelledby="tituloEscopetasEliminadas" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title" id="tituloEscopetasEliminadas">
+                    Escopetas Eliminadas
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="tbEscopetasEliminadas" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>N° de Serie</th>
+                                <th>Marca y Modelo</th>
+                                <th>Estado</th>
+                                <th>Observaciones</th>
+                                <th>Fecha Eliminado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <!-- ============================================================
@@ -141,62 +174,10 @@
     <script src="~/vendor/datatables/extensiones/js/buttons.html5.min.js"></script>
     <script src="~/vendor/datatables/extensiones/js/buttons.print.min.js"></script>
 
+    <!-- SweetAlert -->
+    <script src="~/vendor/sweetalert/sweetalert.min.js"></script>
+
     <!-- JAVA SCRIPT -->
-    <script>
-        $(document).ready(function () {
-            // Inicialización de la tabla de Escopetas
-            // Se verifica si la tabla ya ha sido inicializada para evitar errores.
-            if (!$.fn.DataTable.isDataTable('#tbdataEscopetas')) {
-                var tableEscopetas = $('#tbdataEscopetas').DataTable({
-                    responsive: true, // Habilita la adaptabilidad de la tabla a diferentes tamaños de pantalla
-                    autoWidth: false, // Evita que DataTables intente ajustar el ancho automáticamente, dándote más control con CSS
-                    language: {
-                        // Carga la traducción al español para los textos de la tabla
-                        url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
-                    },
-                    // Define la disposición de los elementos de la tabla:
-                    // 'l' (length): Control para seleccionar la cantidad de filas a mostrar.
-                    // 'B' (buttons): Los botones de exportación.
-                    // 'f' (filter): El campo de búsqueda/filtro.
-                    // 'r' (processing): Indicador de procesamiento.
-                    // 't' (table): La tabla HTML en sí.
-                    // 'i' (information): El texto "Mostrando X de Y elementos".
-                    // 'p' (pagination): Los controles de paginación (anterior, siguiente, números).
-                    dom: 'lBfrtip',
-                    buttons: [
-                        {
-                            extend: 'excelHtml5', // Botón para exportar a Excel
-                            text: '<i class="fas fa-file-excel"></i> Descargar Excel', // Texto e ícono del botón
-                            titleAttr: 'Exportar a Excel', // Atributo de título para accesibilidad
-                            className: 'btn btn-success btn-sm', // Clases de Bootstrap para el estilo del botón
-                            exportOptions: {
-                                // columns: ':not(:last-child)' // Descomenta esta línea si quieres excluir la última columna al exportar
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5', // Botón para exportar a PDF
-                            text: '<i class="fas fa-file-pdf"></i> Descargar PDF', // Texto e ícono del botón
-                            titleAttr: 'Exportar a PDF', // Atributo de título para accesibilidad
-                            className: 'btn btn-danger btn-sm', // Clases de Bootstrap para el estilo del botón
-                            orientation: 'landscape', // Orientación de la página del PDF: horizontal
-                            pageSize: 'LEGAL', // Tamaño de la página del PDF: Legal
-                            exportOptions: {
-                                // columns: ':not(:last-child)' // Descomenta esta línea si quieres excluir la última columna al exportar
-                            },
-                            customize: function (doc) {
-                                // Función para personalización avanzada del PDF (ej. añadir encabezados, pies de página)
-                            }
-                        }
-                    ]
-                });
-
-                // Ajusta las columnas de la tabla y recalcula el responsive al redimensionar la ventana
-                $(window).on('resize', function () {
-                    tableEscopetas.columns.adjust().responsive.recalc();
-                });
-            }
-        });
-    </script>
-
+    <script src="~/js/vistas/Escopeta_Index.js"></script>
 }
 

@@ -193,7 +193,7 @@ namespace GestionAdminPolicial.BLL.Implementacion
                         idRecurso: chalecoCreado.IdChaleco.ToString(),
                         accion: "Alta",
                         idUsuario: entidad.IdUsuario.Value, // <-- usuario logueado
-                        observaciones: "Alta de chaleco en el sistema"
+                        observaciones: $"El Chaleco con Serie N° '{chalecoCreado.SerieChaleco}' fue Registrado."
                     );
                 }
 
