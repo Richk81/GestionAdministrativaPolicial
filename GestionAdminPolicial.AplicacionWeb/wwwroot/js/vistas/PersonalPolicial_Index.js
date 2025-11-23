@@ -248,6 +248,25 @@ $("#btnGuardarPersonal").click(async function () {
         return;
     }
 
+    // Validación Teléfono: solo números
+    const telefono = $("#txtTelefono").val().trim();
+
+    if (telefono !== "" && !/^\d+$/.test(telefono)) {
+        toastr.warning("", "El Teléfono debe contener solo números");
+        $("#txtTelefono").focus();
+        return;
+    }
+
+    // Validación Teléfono de Emergencia: solo números
+    const telefono = $("#txtTelefonoEmergencia").val().trim();
+
+    if (telefono !== "" && !/^\d+$/.test(telefono)) {
+        toastr.warning("", "El Teléfono de Emerg. debe contener solo números");
+        $("#txtTelefonoEmergencia").focus();
+        return;
+    }
+
+
     // Validación correo
     const correo = $("#txtEmail").val().trim();
 
